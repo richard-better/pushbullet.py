@@ -27,17 +27,19 @@ class Device:
 		return self._push(data)
 
 	def push_address(self, name, address):
-		pass
+		data = {"type": "address", "name": name, "address": address}
+		return self._push(data)
 
 	def push_list(self, title, items):
 		data = {"type": "list", "title": title, "items": items}
-		return self._push(data)		
+		return self._push(data)
 
 	def push_file(self, file):
 		pass
 
 	def push_link(self, title, url):
-		pass
+		data = {"type": "link", "title": title, "url": url}
+		return self._push(data)
 
 	def _push(self, data, headers={}):
 		data["device_id"] = self.dev_id
