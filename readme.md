@@ -30,3 +30,7 @@ print(note.status_code)
 # Push a list
 l = nexus.push_list("Shopping list", ["Milk", Eggs", "Bacon"])
 ```
+
+# License
+
+MIT license. See LICENSE for full text.
