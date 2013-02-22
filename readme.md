@@ -28,5 +28,5 @@ note = nexus.push_note("Hello!", "Hello Nexus! Sent from python.")
 print(note.status_code)
 200
 # Push a list
-l = nexus.push_note("Shopping list", ["Milk", Eggs", "Bacon"])
+l = nexus.push_list("Shopping list", ["Milk", Eggs", "Bacon"])
 ```
