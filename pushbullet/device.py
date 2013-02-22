@@ -35,7 +35,7 @@ class Device:
 		return self._push(data)
 
 	def push_file(self, file):
-		pass
+		data
 
 	def push_link(self, title, url):
 		data = {"type": "link", "title": title, "url": url}
