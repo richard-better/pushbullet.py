@@ -5,6 +5,19 @@ It allows you to send push notifications to Android devices.
 
 In order to use the API you need an API key that can be obtained [here](https://www.pushbullet.com/settings). This is user specific and is used instead of passwords.
 
+## Installation
+
+The easiest way is to just open your favorite terminal and type
+```
+pip install pushbullet.py
+```
+
+Alternatively you can clone this repo and install it with
+
+```
+python setup.py install
+```
+
 ## Requirements
 
  - Python. Tested on 2.7 and 3.2
@@ -31,6 +44,11 @@ print(note.status_code)
 l = nexus.push_list("Shopping list", ["Milk", Eggs", "Bacon"])
 ```
 
-# License
+## TODO
+
+ - Add support for uploading files.
+ - Add error handling
+
+## License
 
 MIT license. See LICENSE for full text.
