@@ -14,7 +14,8 @@ setup(
     description = ("A simple python client for pushbullet.com"),
     license = "MIT",
     keywords = "push android pushbullet notification",
-    url = "http://packages.python.org/an_example_pypi_project",
+    url = "https://github.com/randomchars/pushbullet.py",
+    download_url="https://github.com/randomchars/pushbullet.py/tarball/" + pushbullet.__version__,
     packages=['pushbullet'],
     long_description=read('readme.md'),
     classifiers=[
