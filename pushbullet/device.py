@@ -22,28 +22,34 @@ class Device:
 		nickname = extras.get("nickname")
 		self.name = nickname or self._fullname
 
+		self._json_header = {'Content-Type': 'application/json'}
+
 	def push_note(self, title, body):
 		data = {"type": "note", "title": title, "body": body}
-		return self._push(data)
+		return self._push(data, headers=self._json_header)
 
 	def push_address(self, name, address):
 		data = {"type": "address", "name": name, "address": address}
-		return self._push(data)
+		return self._push(data, headers=self._json_header)
 
 	def push_list(self, title, items):
 		data = {"type": "list", "title": title, "items": items}
-		return self._push(data)
+		return self._push(data, headers=self._json_header)
 
 	def push_file(self, file):
-		data
+		data = {"type": "file"}
+		files = {"file": file}
+		return self._push(data, files=files)
 
 	def push_link(self, title, url):
 		data = {"type": "link", "title": title, "url": url}
-		return self._push(data)
+		return self._push(data, headers=self._json_header)
 
-	def _push(self, data, headers={}):
+	def _push(self, data, headers={}, files = {}):
 		data["device_id"] = self.dev_id
-		return self._session.post(self.PUSH_URL, data=json.dumps(data), headers=headers)
+		if not files:
+			data = json.dumps(data)
+		return self._session.post(self.PUSH_URL, data=data, headers=headers, files=files)
 
 	def __repr__(self):
 		return self.__str__()

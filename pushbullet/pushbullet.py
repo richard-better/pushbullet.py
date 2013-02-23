@@ -11,7 +11,6 @@ class PushBullet:
     def __init__(self, apikey):
         self._session = requests.Session()
         self._session.auth = (apikey, "")
-        self._session.headers.update({"content-type": "application/json"})
 
         self._devices = []
         self._load_devices()
