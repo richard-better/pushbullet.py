@@ -45,6 +45,8 @@ print(pb.devices())
 
 # Get a device by it's ID
 phone = pb.get(12345)
+# or
+phone = pb[12345]
 
 # Reload the list of devices, in case a new one was added.
 pb.reload_devices()
@@ -99,6 +101,7 @@ The [pushbullet api documetation](https://www.pushbullet.com/api) cobtains a lis
 ## TODO
 
  - Add better error handling
+ - Tests, tests, tests. Write them.
 
 ## License
 
