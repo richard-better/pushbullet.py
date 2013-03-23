@@ -42,3 +42,9 @@ class PushBullet:
                 return None
             else:
                 return device[0]
+
+    def __getitem__(self, dev_id):
+        if type(dev_id) != int:
+            raise TypeError("device id must be an integer")
+        else:
+            return self.get(dev_id)
