@@ -1,3 +1,2 @@
 from .pushbullet import PushBullet
-
-__version__ = "0.3.0"
+from .__version__ import __version__

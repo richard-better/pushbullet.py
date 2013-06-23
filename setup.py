@@ -3,7 +3,8 @@ import sys
 
 from setuptools import setup
 
-import pushbullet
+with open("./pushbullet/__version__.py") as version_file:
+    version = version_file.read().split("\"")[1]
 
 if sys.argv[-1] == 'publish':
     os.system('python setup.py sdist upload')
@@ -14,7 +15,7 @@ def read(fname):
 
 setup(
     name = "pushbullet.py",
-    version = pushbullet.__version__,
+    version = version,
     author = "Richard Borcsik",
     author_email = "richard@borcsik.com",
     description = ("A simple python client for pushbullet.com"),
@@ -23,7 +24,7 @@ setup(
     url = "https://github.com/randomchars/pushbullet.py",
     download_url="https://github.com/randomchars/pushbullet.py/tarball/" + pushbullet.__version__,
     packages=['pushbullet'],
-     package_data={'': ['LICENSE', 'readme.md', 'changelog.md'],},
+    package_data={'': ['LICENSE', 'readme.md', 'changelog.md'],},
     long_description=read('readme.md') + "\n\n" + read("changelog.md"),
     classifiers=[
         "Development Status :: 4 - Beta",
