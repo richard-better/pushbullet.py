@@ -8,15 +8,14 @@ class PushBullet:
 
     DEV_LIST_URL = "https://www.pushbullet.com/api/devices"
 
-    def __init__(self, apikey):
-        self._session = requests.Session()
-        self._session.auth = (apikey, "")
+    def __init__(self, api_key):
+        self.api_key = api_key
 
         self._devices = []
         self._load_devices()
 
     def _load_devices(self):
-        resp = self._session.get(self.DEV_LIST_URL)
+        resp = requests.get(self.DEV_LIST_URL, auth=(self.api_key, ""))
         resp_dict = resp.json()
 
         own_devices = resp_dict.get("devices", [])
@@ -24,7 +23,7 @@ class PushBullet:
 
         devices = []
         for device_info in chain(own_devices, shared_devices):
-            d = Device(self._session, device_info)
+            d = Device(self.api_key, device_info["id"], device_info)
             devices.append(d)
 
         self._devices = devices
@@ -32,19 +31,20 @@ class PushBullet:
     def reload_devices(self):
         self._load_devices()
 
+    @property
     def devices(self):
         return self._devices
 
     def get(self, query):
         if type(query) is int:
-            device = list(filter(lambda x: x.dev_id == query, self._devices))
+            device = list(filter(lambda x: x.device_id == query, self._devices))
             if not device:
                 return None
             else:
                 return device[0]
 
-    def __getitem__(self, dev_id):
-        if type(dev_id) != int:
-            raise TypeError("device id must be an integer")
+    def __getitem__(self, device_id):
+        if type(device_id) != int:
+            raise TypeError("device_id must be an integer")
         else:
-            return self.get(dev_id)
+            return self.get(device_id)

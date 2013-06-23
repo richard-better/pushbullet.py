@@ -1,15 +1,20 @@
 import json
 
+import requests
+
 class Device:
 
 	PUSH_URL = "https://www.pushbullet.com/api/pushes"
 
-	def __init__(self, session, device_info):
-		self._session = session
-		self.dev_id = device_info.get("id")
-		self.owner = device_info.get("owner_name", None)
+	def __init__(self, api_key, device_id, device_info = None):
+		self.api_key = api_key
+		self.device_id = device_id
 
-		extras = device_info["extras"]
+		device_info = device_info or {}
+
+		self.owner = device_info.get("owner_name")
+
+		extras = device_info.get("extras", {})
 		self.model = extras.get("model")
 		self.manufacturer = extras.get("manufacturer")
 		self.android_version = extras.get("android_version")
@@ -46,14 +51,12 @@ class Device:
 		return self._push(data, headers=self._json_header)
 
 	def _push(self, data, headers={}, files = {}):
-		data["device_id"] = self.dev_id
+		data["device_id"] = self.device_id
 		if not files:
 			data = json.dumps(data)
-		return self._session.post(self.PUSH_URL, data=data, headers=headers, files=files)
+		headers.update({"User-Agent": "ifttt2pushbullet.herokuapp.com"})
+		return requests.post(self.PUSH_URL, data=data, headers=headers,
+							 files=files, auth=(self.api_key, ""))
 
 	def __repr__(self):
-		return self.__str__()
-
-	def __str__(self):
-		owner_info = ", 'owner': '%s '}" % (self.owner) if self.owner else "}"
-		return "{'dev_id': %s, 'name': '%s'" % (self.dev_id, self.name) + owner_info
+		return "Device('{}', {})".format(self.api_key, self.device_id)
