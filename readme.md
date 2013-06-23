@@ -20,7 +20,7 @@ python setup.py install
 
 ## Requirements
 
- - Python. Tested on 2.7 and 3.2
+ - Python. Tested on 2.7 and 3.
  - The wonderful requests library.
 
 ## Usage
@@ -32,7 +32,7 @@ python setup.py install
 from pushbullet import PushBullet
 
 
-pb = PushBullet("API_KEY")
+pb = PushBullet(api_key)
 
 ```
 
@@ -40,8 +40,8 @@ pb = PushBullet("API_KEY")
 
 ```python
 # Get all devices that the current user has access to.
-print(pb.devices())
-# [{'dev_id: '12435', 'name': "Test Phone"}]
+print(pb.devices)
+# [Device("api_key", 12345)]
 
 # Get a device by it's ID
 phone = pb.get(12345)
@@ -51,6 +51,16 @@ phone = pb[12345]
 # Reload the list of devices, in case a new one was added.
 pb.reload_devices()
 ```
+
+You can also create `Device` objects directly:
+
+```python
+from pushbullet import Device
+
+phone = Device(api_key, device_id)
+```
+
+This doesn't make a network request.
 
 ### Pushing things
 
@@ -96,7 +106,7 @@ print(push.status_code)
 # 200
 ```
 
-The [pushbullet api documetation](https://www.pushbullet.com/api) cobtains a list of possible status codes.
+The [pushbullet api documetation](https://www.pushbullet.com/api) contains a list of possible status codes.
 
 ## TODO
 
