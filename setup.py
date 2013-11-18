@@ -22,7 +22,7 @@ setup(
     license = "MIT",
     keywords = "push android pushbullet notification",
     url = "https://github.com/randomchars/pushbullet.py",
-    download_url="https://github.com/randomchars/pushbullet.py/tarball/" + version
+    download_url="https://github.com/randomchars/pushbullet.py/tarball/" + version,
     packages=['pushbullet'],
     package_data={'': ['LICENSE', 'readme.md', 'changelog.md'],},
     long_description=read('readme.md') + "\n\n" + read("changelog.md"),
