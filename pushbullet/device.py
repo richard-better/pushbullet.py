@@ -4,7 +4,7 @@ import requests
 
 class Device:
 
-	PUSH_URL = "https://www.pushbullet.com/api/pushes"
+	PUSH_URL = "https://api.pushbullet.com/api/pushes"
 
 	def __init__(self, api_key, device_id, device_info = None):
 		self.api_key = api_key
@@ -23,7 +23,7 @@ class Device:
 
 		self._fullname = "{} {} {}".format(self.manufacturer,
 										   self.model, self.android_version)
-		
+
 		nickname = extras.get("nickname")
 		self.name = nickname or self._fullname
 

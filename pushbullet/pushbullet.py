@@ -6,7 +6,7 @@ from .device import Device
 
 class PushBullet:
 
-    DEV_LIST_URL = "https://www.pushbullet.com/api/devices"
+    DEV_LIST_URL = "https://api.pushbullet.com/api/devices"
 
     def __init__(self, api_key):
         self.api_key = api_key
