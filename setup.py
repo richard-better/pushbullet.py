@@ -10,8 +10,13 @@ if sys.argv[-1] == 'publish':
     os.system('python setup.py sdist upload')
     sys.exit()
 
+
 def read(fname):
-    return open(os.path.join(os.path.dirname(__file__), fname)).read()
+    try:
+        with open(os.path.join(os.path.dirname(__file__), fname)) as f:
+            return f.read()
+    except IOError:
+        return ""
 
 setup(
     name = "pushbullet.py",
@@ -24,8 +29,7 @@ setup(
     url = "https://github.com/randomchars/pushbullet.py",
     download_url="https://github.com/randomchars/pushbullet.py/tarball/" + version,
     packages=['pushbullet'],
-    package_data={'': ['LICENSE', 'readme.md', 'changelog.md'],},
-    long_description=read('readme.md') + "\n\n" + read("changelog.md"),
+    long_description=read('readme.md'),
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
