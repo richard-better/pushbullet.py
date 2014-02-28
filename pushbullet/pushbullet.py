@@ -4,7 +4,7 @@ import requests
 
 from .device import Device
 
-class PushBullet:
+class PushBullet(object):
 
     DEV_LIST_URL = "https://api.pushbullet.com/api/devices"
 
