@@ -1,7 +1,7 @@
 # PushBullet.py
 
 This is a python library for the wonderful [PushBullet](https://www.pushbullet.com) service.
-It allows you to send push notifications to Android devices.  
+It allows you to send push notifications to [Android](https://play.google.com/store/apps/details?id=com.pushbullet.android) and [iOS](https://itunes.apple.com/us/app/pushbullet/id810352052) devices.
 
 In order to use the API you need an API key that can be obtained [here](https://www.pushbullet.com/account). This is user specific and is used instead of passwords.
 
@@ -31,9 +31,7 @@ python setup.py install
 ```python
 from pushbullet import PushBullet
 
-
 pb = PushBullet(api_key)
-
 ```
 
 ### Getting the devices
