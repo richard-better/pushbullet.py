@@ -2,7 +2,7 @@ import json
 
 import requests
 
-class Device:
+class Device(object):
 
 	PUSH_URL = "https://api.pushbullet.com/api/pushes"
 
