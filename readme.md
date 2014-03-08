@@ -91,7 +91,7 @@ push = phone.push_link("Cool site", "https://github.com")
 #### Pushing a file
 
 ```python
-with open("my_cool_app.apk", "b") as apk:
+with open("my_cool_app.apk", "rb") as apk:
 	push = phone.push_file(apk)
 ```
 
