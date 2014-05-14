@@ -1,8 +1,14 @@
 from itertools import chain
 
 import requests
-
+import sys
 from .device import Device
+
+if sys.version_info >= (3, 0, 0):
+    integer_type = (int,)
+else:
+    integer_type = (int, long)
+
 
 class PushBullet(object):
 
@@ -36,7 +42,7 @@ class PushBullet(object):
         return self._devices
 
     def get(self, query):
-        if type(query) is int:
+        if isinstance(query, integer_type):
             device = list(filter(lambda x: x.device_id == query, self._devices))
             if not device:
                 return None
@@ -44,7 +50,7 @@ class PushBullet(object):
                 return device[0]
 
     def __getitem__(self, device_id):
-        if type(device_id) != int:
+        if not isinstance(device_id, integer_type):
             raise TypeError("device_id must be an integer")
         else:
             return self.get(device_id)
