@@ -41,8 +41,8 @@ class Device(object):
 		data = {"type": "list", "title": title, "items": items}
 		return self._push(data, headers=self._json_header)
 
-	def push_file(self, file):
-		data = {"type": "file"}
+	def push_file(self, file, body):
+		data = {"type": "file", "body": body}
 		files = {"file": file}
 		return self._push(data, files=files)
 
