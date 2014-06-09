@@ -20,12 +20,14 @@ class Device(object):
 		self.android_version = extras.get("android_version")
 		self.sdk_version = extras.get("sdk_version")
 		self.app_version = extras.get("app_version")
+		self.pushable = extras.get("pushable")
+		self.active = extras.get("active")
 
 		self._fullname = "{} {} {}".format(self.manufacturer,
 										   self.model, self.android_version)
 
-		nickname = extras.get("nickname")
-		self.name = nickname or self._fullname
+		self.nickname = extras.get("nickname")
+		#self.name = self.nickname
 
 		self._json_header = {'Content-Type': 'application/json'}
 
