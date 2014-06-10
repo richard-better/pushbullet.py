@@ -48,8 +48,8 @@ class Device(object):
 		files = {"file": file}
 		return self._push(data, files=files)
 
-	def push_link(self, title, url):
-		data = {"type": "link", "title": title, "url": url}
+	def push_link(self, title, url, body):
+		data = {"type": "link", "title": title, "url": url, "body": body}
 		return self._push(data, headers=self._json_header)
 
 	def _push(self, data, headers={}, files = {}):
