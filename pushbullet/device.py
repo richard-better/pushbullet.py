@@ -1,10 +1,6 @@
-import json
-
 import requests
 
 class Device(object):
-
-	PUSH_URL = "https://api.pushbullet.com/v2/pushes"
 
 	def __init__(self, api_key, device_info):
 		self.api_key = api_key
@@ -16,8 +12,6 @@ class Device(object):
 					 "kind","created", "modified",
 					 "android_version", "model", "pushable"):
 			setattr(self, attr, device_info.get(attr))
-
-		self._json_header = {'Content-Type': 'application/json'}
 
 	def push_note(self, title, body):
 		data = {"type": "note", "title": title, "body": body}
@@ -37,10 +31,7 @@ class Device(object):
 
 	def _push(self, data):
 		data["device_iden"] = self.device_iden
-
-		return requests.post(self.PUSH_URL, data=json.dumps(data),
-							 headers=self._json_header,
-							 auth=(self.api_key, ""))
+		return self._account._push(data)
 
 	def __str__(self):
 		return self.nickname or (self.manufacturer + " " + self.model)
