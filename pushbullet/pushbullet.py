@@ -32,6 +32,9 @@ class PushBullet(object):
         data = {"type": "note", "title": title, "body": body}
         if device:
             data["device_iden"] = device.device_iden
+        elif email:
+            data["email"] = email
+
 
         return self._push(data)
 
@@ -39,6 +42,8 @@ class PushBullet(object):
         data = {"type": "address", "name": name, "address": address}
         if device:
             data["device_iden"] = device.device_iden
+        elif email:
+            data["email"] = email
 
         return self._push(data)
 
@@ -56,6 +61,9 @@ class PushBullet(object):
 
         if device:
             data["device_iden"] = device.device_iden
+        elif email:
+            data["email"] = email
+
         return self._push(data)
 
 
