@@ -43,6 +43,6 @@ setup(
         "Topic :: Utilities"
     ],
     install_requires=[
-          'requests>=1.0.0',
+          'requests>=1.0.0', 'web.py',
       ]
 )
