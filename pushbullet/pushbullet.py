@@ -27,33 +27,37 @@ class PushBullet(object):
             d._account = self
             self.devices.append(d)
 
-    def push_note(self, title, body, device=None):
+
+    def push_note(self, title, body, device=None, email=None):
         data = {"type": "note", "title": title, "body": body}
         if device:
             data["device_iden"] = device.device_iden
 
         return self._push(data)
 
-    def push_address(self, name, address, device=None):
+    def push_address(self, name, address, device=None, email=None):
         data = {"type": "address", "name": name, "address": address}
         if device:
             data["device_iden"] = device.device_iden
 
         return self._push(data)
 
-    def push_list(self, title, items, device=None):
+    def push_list(self, title, items, device=None, email=None):
         data = {"type": "list", "title": title, "items": items}
         if device:
             data["device_iden"] = device.device_iden
+        elif email:
+            data["email"] = email
 
         return self._push(data)
 
-    def push_link(self, title, url, body=None, device=None):
+    def push_link(self, title, url, body=None, device=None, email=None):
         data = {"type": "link", "title": title, "url": url, "body": body}
 
         if device:
             data["device_iden"] = device.device_iden
         return self._push(data)
+
 
     def _push(self, data):
         return requests.post(self.PUSH_URL, data=json.dumps(data),
