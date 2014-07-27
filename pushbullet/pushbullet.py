@@ -69,7 +69,7 @@ class PushBullet(object):
             data["device_iden"] = device.device_iden
         elif email:
             data["email"] = email
-        
+
         return self._push(data)
 
     def push_address(self, name, address, device=None, email=None):
@@ -97,6 +97,7 @@ class PushBullet(object):
             data["device_iden"] = device.device_iden
         elif email:
             data["email"] = email
+
         return self._push(data)
 
 
