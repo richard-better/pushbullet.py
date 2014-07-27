@@ -1,15 +1,6 @@
-from itertools import chain
-
 import requests
-import sys
 import json
 from .device import Device
-
-if sys.version_info >= (3, 0, 0):
-    integer_type = (int,)
-else:
-    integer_type = (int, long)
-
 
 class PushBullet(object):
 

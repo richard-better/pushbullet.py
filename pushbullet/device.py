@@ -1,5 +1,3 @@
-import requests
-
 class Device(object):
 
 	def __init__(self, api_key, device_info):
