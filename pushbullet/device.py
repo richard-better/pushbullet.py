@@ -54,7 +54,6 @@ class Device(object):
 		data["device_id"] = self.device_id
 		if not files:
 			data = json.dumps(data)
-		headers.update({"User-Agent": "ifttt2pushbullet.herokuapp.com"})
 		return requests.post(self.PUSH_URL, data=data, headers=headers,
 							 files=files, auth=(self.api_key, ""))
 
