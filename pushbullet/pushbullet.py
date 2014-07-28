@@ -56,6 +56,16 @@ class PushBullet(object):
         else:
             return False, None
 
+    def new_contact(self, name, email):
+        data = {"name": nickname, "email": email}
+        r = self._session.post(self.CONTACTS_URL, data=json.dumps(data))
+        if r.status_code == requests.codes.ok:
+            new_contact = Contact(self, r.json())
+            self.contacts.append(new_contact)
+            return True, new_contact
+        else:
+            return False, None
+
     def edit_device(self, device, nickname=None, model=None, manufacturer=None):
         data = {"nickname": nickname}
         iden = device.device_iden
@@ -67,11 +77,32 @@ class PushBullet(object):
         else:
             return False, device
 
+    def edit_contact(self, contact, name):
+        data = {"name": name}
+        iden = contact.iden
+        r = self._session.post("{}/{}".format(self.CONTACTS_URL, iden),
+                                data=json.dumps(data))
+        if r.status_code == requests.codes.ok:
+            new_contact = Contact(self, r.json())
+            self.contacts[self.contacts.index(contact)] = new_contact
+            return True, new_contact
+        else:
+            return False, contact
+
     def remove_device(self, device):
         iden = device.device_iden
         r = self._session.delete("{}/{}".format(self.DEVICES_URL, iden))
         if r.status_code == requests.codes.ok:
             self.devices.remove(device)
+            return True, r.json()
+        else:
+            return False, r.json()
+
+    def remove_contact(self, contact):
+        iden = contact.iden
+        r = self._session.delete("{}/{}".format(self.CONTACTS_URL, iden))
+        if r.status_code == requests.codes.ok:
+            self.contacts.remove(contact)
             return True, r.json()
         else:
             return False, r.json()
