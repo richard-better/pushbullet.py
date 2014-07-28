@@ -1,13 +1,13 @@
 class Device(object):
 
-	def __init__(self, api_key, device_info):
-		self.api_key = api_key
+	def __init__(self, account, device_info):
+		self._account = account
 		self.device_iden = device_info.get("iden")
 
 		for attr in ("push_token", "app_version",
 					 "android_sdk_version", "fingerprint",
 					 "active", "nickname","manufacturer",
-					 "kind","created", "modified",
+					 "type","created", "modified",
 					 "android_version", "model", "pushable"):
 			setattr(self, attr, device_info.get(attr))
 
@@ -28,7 +28,7 @@ class Device(object):
 		return self._push(data)
 
 	def push_file(self, file_name, file_url, file_type, body=None):
-		return self._account.push_file(file_name, file_url, file_type, body, device=self):
+		return self._account.push_file(file_name, file_url, file_type, body, device=self)
 
 	def _push(self, data):
 		data["device_iden"] = self.device_iden

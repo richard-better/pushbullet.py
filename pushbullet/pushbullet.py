@@ -30,9 +30,38 @@ class PushBullet(object):
         device_list = resp_dict.get("devices", [])
 
         for device_info in device_list:
-            d = Device(self.api_key, device_info)
-            d._account = self
+            d = Device(self, device_info)
             self.devices.append(d)
+
+    def new_device(self, nickname):
+        data = {"nickname": nickname, "type": "stream"}
+        r = self._session.post(self.DEVICES_URL, data=json.dumps(data))
+        if r.status_code == requests.codes.ok:
+            new_device = Device(self, r.json())
+            self.devices.append(new_device)
+            return True, new_device
+        else:
+            return False, None
+
+    def edit_device(self, device, nickname=None, model=None, manufacturer=None):
+        data = {"nickname": nickname}
+        iden = device.device_iden
+        r = self._session.post("{}/{}".format(self.DEVICES_URL, iden), data=json.dumps(data))
+        if r.status_code == requests.codes.ok:
+            new_device = Device(self, r.json())
+            self.devices[self.devices.index(device)] = new_device
+            return True, new_device
+        else:
+            return False, device
+
+    def remove_device(self, device):
+        iden = device.device_iden
+        r = self._session.delete("{}/{}".format(self.DEVICES_URL, iden))
+        if r.status_code == requests.codes.ok:
+            self.devices.remove(device)
+            return True, r.json()
+        else:
+            return False, r.json()
 
     def get_pushes(self, modified_after=None):
         data = {"modified_after": modified_after}
@@ -79,7 +108,7 @@ class PushBullet(object):
 
         upload = requests.post(upload_url, data=upload_data, files={"file": f})
 
-        return return True, {"file_type": file_type, "file_url": file_url, "file_name": file_name}
+        return True, {"file_type": file_type, "file_url": file_url, "file_name": file_name}
 
     def push_file(self, file_name, file_url, file_type, body=None, device=None, email=None):
         data = {"type": "file", "file_type": file_type, "file_url": file_url, "file_name": file_name}
@@ -130,7 +159,6 @@ class PushBullet(object):
 
         return self._push(data)
 
-
     def _push(self, data):
         r = self._session.post(self.PUSH_URL, data=json.dumps(data))
 
@@ -138,7 +166,6 @@ class PushBullet(object):
             return True, r.json()
         else:
             return False, r.json()
-
 
     def refresh(self):
         self._load_devices()
