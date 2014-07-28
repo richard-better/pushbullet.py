@@ -22,7 +22,7 @@ setup(
     name = "pushbullet.py",
     version = version,
     author = "Richard Borcsik",
-    author_email = "richard@borcsik.com",
+    author_email = "borcsikrichard@gmail.com",
     description = ("A simple python client for pushbullet.com"),
     license = "MIT",
     keywords = "push android pushbullet notification",
