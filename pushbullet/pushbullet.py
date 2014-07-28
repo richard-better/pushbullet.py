@@ -69,6 +69,9 @@ class PushBullet(object):
 
         # Request url for file upload
         r = self._session.post(self.UPLOAD_REQUEST_URL, data=json.dumps(data))
+
+        if r.status_code != requests.codes.ok:
+            return False, r.json()
         
         upload_data = r.json().get("data")
         file_url = r.json().get("file_url")
@@ -76,7 +79,7 @@ class PushBullet(object):
 
         upload = requests.post(upload_url, data=upload_data, files={"file": f})
 
-        return {"file_type": file_type, "file_url": file_url, "file_name": file_name}
+        return return True, {"file_type": file_type, "file_url": file_url, "file_name": file_name}
 
     def push_file(self, file_name, file_url, file_type, body=None, device=None, email=None):
         data = {"type": "file", "file_type": file_type, "file_url": file_url, "file_name": file_name}
@@ -129,7 +132,13 @@ class PushBullet(object):
 
 
     def _push(self, data):
-        return self._session.post(self.PUSH_URL, data=json.dumps(data))
+        r = self._session.post(self.PUSH_URL, data=json.dumps(data))
+
+        if r.status_code == requests.codes.ok:
+            return True, r.json()
+        else:
+            return False, r.json()
+
 
     def refresh(self):
         self._load_devices()
