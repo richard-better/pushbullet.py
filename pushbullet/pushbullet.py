@@ -34,6 +34,32 @@ class PushBullet(object):
             d._account = self
             self.devices.append(d)
 
+    def get_pushes(self, modified_after=None):
+        data = {"modified_after": modified_after}
+        r = self._session.get(self.PUSH_URL, params=data) 
+
+        if r.status_code == requests.codes.ok:
+            return True, r.json().get("pushes")
+        else:
+            return False, r.json()
+
+    def dismiss_push(self, iden):
+        data = {"dismissed": True}
+        r = self._session.post("{}/{}".format(self.PUSH_URL, iden), data=json.dumps(data))
+ 
+        if r.status_code == requests.codes.ok:
+            return True, r.json()
+        else:
+            return False, r.json()
+
+    def delete_push(self, iden):
+        r = self._session.delete("{}/{}".format(self.PUSH_URL, iden))
+ 
+        if r.status_code == requests.codes.ok:
+            return True, r.json()
+        else:
+            return False, r.json()
+
     def upload_file(self, f, file_name, file_type=None):
         if not file_type:
             file_type = magic.from_buffer(f.read(1024), mime=True)
