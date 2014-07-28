@@ -4,10 +4,12 @@ import requests
 import magic
 
 from .device import Device
+from .contact import Contact
 
 class PushBullet(object):
 
     DEVICES_URL = "https://api.pushbullet.com/v2/devices"
+    CONTACTS_URL = "https://api.pushbullet.com/v2/contacts"
     PUSH_URL = "https://api.pushbullet.com/v2/pushes"
     UPLOAD_REQUEST_URL = "https://api.pushbullet.com/v2/upload-request"
 
@@ -20,7 +22,7 @@ class PushBullet(object):
         self._session.auth = (self.api_key, "")
         self._session.headers.update(self._json_header)
 
-        self._load_devices()
+        self.refresh()
 
     def _load_devices(self):
         self.devices = []
@@ -32,6 +34,17 @@ class PushBullet(object):
         for device_info in device_list:
             d = Device(self, device_info)
             self.devices.append(d)
+
+    def _load_contacts(self):
+        self.contacts = []
+
+        resp = self._session.get(self.CONTACTS_URL)
+        resp_dict = resp.json()
+        contacts_list = resp_dict.get("contacts", [])
+
+        for contact_info in contacts_list:
+            c = Contact(self, contact_info)
+            self.contacts.append(c)
 
     def new_device(self, nickname):
         data = {"nickname": nickname, "type": "stream"}
@@ -79,7 +92,7 @@ class PushBullet(object):
         if r.status_code == requests.codes.ok:
             return True, r.json()
         else:
-            return False, r.json()
+            return False, r.json()  
 
     def delete_push(self, iden):
         r = self._session.delete("{}/{}".format(self.PUSH_URL, iden))
@@ -169,3 +182,4 @@ class PushBullet(object):
 
     def refresh(self):
         self._load_devices()
+        self._load_contacts()
