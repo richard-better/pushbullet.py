@@ -35,4 +35,7 @@ class Device(object):
 		return self._account._push(data)
 
 	def __str__(self):
-		return self.nickname or (self.manufacturer + " " + self.model)
+		return self.nickname or ("{} {}".format(self.manufacturer, self.model))
+
+	def __repr__(self):
+		return self.__str__()
