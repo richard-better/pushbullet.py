@@ -47,11 +47,12 @@ class PushBullet(object):
             c = Contact(self, contact_info)
             self.contacts.append(c)
 
-    def _load_user_info(self, nickname):
+    def _load_user_info(self):
         r = self._session.get(self.ME_URL)
         if r.status_code == requests.codes.ok:
             self.user_info = r.json()
         else:
+            self.user_info = {}
 
     def new_device(self, nickname):
         data = {"nickname": nickname, "type": "stream"}
