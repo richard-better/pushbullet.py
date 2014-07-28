@@ -30,8 +30,8 @@ Alternatively you can clone this repo and install it with
 Requirements
 ------------
 
--  Python. Tested on 2.7 and 3.
 -  The wonderful requests library.
+-  The magical python-magic library.
 
 Usage
 -----
@@ -45,33 +45,6 @@ Authentication
 
     pb = PushBullet(api_key)
 
-Getting the devices
-~~~~~~~~~~~~~~~~~~~
-
-.. code:: python
-
-    # Get all devices that the current user has access to.
-    print(pb.devices)
-    # [Device("api_key", 12345)]
-
-    # Get a device by it's ID
-    phone = pb.get(12345)
-    # or
-    phone = pb[12345]
-
-    # Reload the list of devices, in case a new one was added.
-    pb.reload_devices()
-
-You can also create ``Device`` objects directly:
-
-.. code:: python
-
-    from pushbullet import Device
-
-    phone = Device(api_key, device_id)
-
-This doesn't make a network request.
-
 Pushing things
 ~~~~~~~~~~~~~~
 
@@ -80,7 +53,7 @@ Pushing a text note
 
 .. code:: python
 
-    push = phone.push_note("This is the title", "This is the body".)
+    success, push = pb.push_note("This is the title", "This is the body".)
 
 Pushing an address
 ^^^^^^^^^^^^^^^^^^
@@ -88,7 +61,7 @@ Pushing an address
 .. code:: python
 
     address = " 25 E 85th St, 10028 New York, NY"
-    push = phone.push_address("home", address)
+    success, push = pb.push_address("home", address)
 
 Pushing a list
 ^^^^^^^^^^^^^^
@@ -96,33 +69,172 @@ Pushing a list
 .. code:: python
 
     to_buy = ["milk", "bread", "cider"]
-    push = phone.push_list("Shopping list", to_buy)
+    success, push = phone.push_list("Shopping list", to_buy)
 
 Pushing a link
 ^^^^^^^^^^^^^^
 
 .. code:: python
 
-    push = phone.push_link("Cool site", "https://github.com")
+    success, push = phone.push_link("Cool site", "https://github.com")
 
 Pushing a file
 ^^^^^^^^^^^^^^
 
+Pushing files is a two part process. First you need to upload the file, and after that you can push it like you would anything else.
+
 .. code:: python
 
-    with open("my_cool_app.apk", "rb") as apk:
-        push = phone.push_file(apk)
+    with open("my_cool_picture.jpg", "rb") as pic:
+        success, file_data = pb.upload_file(pic, "picture.jpg")
+
+    success, push = pb.push_file(**file_data)
+
+
+The advantage of this is that if you already have a file uploaded somewhere, you can use that instead of uploading again. For example:
+
+
+.. code:: python
+
+    success, push = pb.push_file(file_url="https://i.imgur.com/IAYZ20i.jpg", file_name="cat.jpg", file_type="image/jpeg")
+
+Working with pushes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can also view all previous pushes:
+
+.. code:: python
+
+    success, pushes = pb.get_pushes()
+
+Pushes is a list containg dictionaries that have push data. You can use this data to dismiss notifications or delete pushes.
+
+.. code:: python
+
+    latest = pushes[0]
+
+    # We already read it, so let's dismiss it
+    success, error_message = pb.dismiss_push(lates.get("iden"))
+
+    # Now delete it
+    success, error_message = pb.delete_push(lates.get("iden"))
+    
+
+Pushing to specific devices
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+So far all our pushes went to all connected devices, but there's a way to limit that.
+
+First we need to get hold of some devices.
+
+.. code:: python
+
+    # Get all devices that the current user has access to.
+    print(pb.devices)
+    # [Device('Motorola Moto G'), Device('N7'), Device('Chrome')]
+
+    motog = pb.devices[0]
+
+Now we can use the device objects like we did with `pb`:
+
+.. code:: python
+
+    success, push = motog.push_note("Hello world!", "We're using the api.")
+
+Alternatively we can pass the device to push methods:
+
+.. code:: python
+
+    success, push = pb.push_note("Hello world!", "We're using the api.", device=motog)
+
+Creating new devices
+^^^^^^^^^^^^^^^^^^^^
+
+Creating a new device is easy too, you only need to specify a name for it.
+
+.. code:: python
+    
+    success, listener = pb.new_device("Listener")
+
+Now you can use it like any other device.
+
+Editing devices
+^^^^^^^^^^^^^^^
+
+You can change the nickname, the manufacturer and the model of the device:
+
+.. code:: python
+
+    success, listener = pb.edit_device(listener, make="Python", model="3.4.1")
+    success, motog = pb.edit_device(motog, nickname="My MotoG")
+
+
+Deleting devices
+^^^^^^^^^^^^^^^^
+
+Of course, you can also delete devices, even those not added by you.
+
+.. code:: python
+
+    success, error_message = pb.remove_device(listener)
+
+
+Contacts
+~~~~~~~~~~~~
+
+Contacts work just like devices:
+
+.. code:: python
+
+    # Get all contacts the user has
+    print(pb.contacts)
+    # [Contact('Peter' <peter@gmail.com>), Contact('Sophie' <sophie@gmail.com>]
+
+    sophie = pb.contacs[1]
+
+Now we can use the contact objects like we did with `pb` or with the devices.:
+
+.. code:: python
+
+    success, push = sophie.push_note("Hello world!", "We're using the api.")
+
+    # Or:
+    success, push = pb.push_note("Hello world!", "We're using the api.", contact=sophie)
+
+
+Adding new contacts
+^^^^^^^^^^^^^^^^^^^^
+
+.. code:: python
+    
+    success, bob = pb.new_contact("Bob", "bob@gmail.com")
+
+Editing contacts
+^^^^^^^^^^^^^^^^^
+
+You can change the name of any contact:
+
+.. code:: python
+
+    success, bob = pb.edit_contact(bob, "bobby")
+
+Deleting contacts
+^^^^^^^^^^^^^^^^^^^
+
+.. code:: python
+
+    success, error_message = pb.remove_contact(bob)
+
 
 Error checking
-^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~
 
-All pushes return the underlying requests object that can be used to
-check the status of the operation
+Most methods return a tuple containing a bool value indicating success or failure, and the response from the server.
 
 .. code:: Python
-
-    print(push.status_code)
-    # 200
+    
+    success, push = pb.push_note("Hello world!", "We're using the api.")
+    
 
 The `pushbullet api documetation <https://www.pushbullet.com/api>`__
 contains a list of possible status codes.
@@ -130,7 +242,7 @@ contains a list of possible status codes.
 TODO
 ----
 
--  Add better error handling
+-  Websocket support
 -  Tests, tests, tests. Write them.
 
 License
