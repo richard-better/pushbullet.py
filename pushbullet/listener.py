@@ -73,17 +73,7 @@ class Listener(Thread, websocket.WebSocketApp):
         try:
             json_message = json.loads(message)
             if json_message['type'] == 'tickle':
-                pushes_url = PUSHES_URL + '?modified_after=' + str(self.last_update)
-                logging.debug('calling:' + pushes_url)
-                res = requests.get(pushes_url, auth=(self.api_key, ""), proxies=self.proxies)
-                self.last_update = time.time()
-                pushes = res.json()['pushes']
-                for push in pushes:
-                    log.debug(str(push))
-                    # add the push to history
-                    self.history.append(push)
-                    self.on_push(push)
-                log.debug(str(self.history))
+                self.on_push()
         except Exception as e:
             logging.exception(e)
 
