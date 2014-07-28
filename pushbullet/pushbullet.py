@@ -10,6 +10,7 @@ class PushBullet(object):
 
     DEVICES_URL = "https://api.pushbullet.com/v2/devices"
     CONTACTS_URL = "https://api.pushbullet.com/v2/contacts"
+    ME_URL = "https://api.pushbullet.com/v2/users/me"
     PUSH_URL = "https://api.pushbullet.com/v2/pushes"
     UPLOAD_REQUEST_URL = "https://api.pushbullet.com/v2/upload-request"
 
@@ -45,6 +46,12 @@ class PushBullet(object):
         for contact_info in contacts_list:
             c = Contact(self, contact_info)
             self.contacts.append(c)
+
+    def _load_user_info(self, nickname):
+        r = self._session.get(self.ME_URL)
+        if r.status_code == requests.codes.ok:
+            self.user_info = r.json()
+        else:
 
     def new_device(self, nickname):
         data = {"nickname": nickname, "type": "stream"}
@@ -214,3 +221,4 @@ class PushBullet(object):
     def refresh(self):
         self._load_devices()
         self._load_contacts()
+        self._load_user_info()
