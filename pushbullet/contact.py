@@ -16,4 +16,4 @@ class Contact(Device):
 		return self._account._push(data)
 
 	def __str__(self):
-		return "Contact({} <{}>)".format(self.name, self.email_normalized)
+		return "Contact('{}' <{}>)".format(self.name, self.email_normalized)
