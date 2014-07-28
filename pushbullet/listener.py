@@ -12,19 +12,9 @@ import websocket
 log = logging.getLogger('pushbullet.Listener')
 
 WEBSOCKET_URL = 'wss://stream.pushbullet.com/websocket/'
-PUSHES_URL = 'https://api.pushbullet.com/v2/pushes'
-
-
-class PushTypeNotProvided(Exception):
-    def __init__(self, message):
-        self.message = message
-
-    def __str__(self):
-        return self.message
-
 
 class Listener(Thread, websocket.WebSocketApp):
-    def __init__(self, api_key,
+    def __init__(self, account,
                  on_push=None,
                  http_proxy_host=None,
                  http_proxy_port=None):
@@ -34,14 +24,19 @@ class Listener(Thread, websocket.WebSocketApp):
         :param http_proxy_host: host proxy (ie localhost)
         :param http_proxy_port: host port (ie 3128)
         """
+        self._account = account
+        self._api_key = self._account.api_key
+
         Thread.__init__(self)
-        websocket.WebSocketApp.__init__(self, WEBSOCKET_URL + api_key,
+        websocket.WebSocketApp.__init__(self, WEBSOCKET_URL + self._api_key,
                                         on_open=self.on_open,
                                         on_message=self.on_message,
                                         on_close=self.on_close)
-        self.api_key = api_key
+
         self.connected = False
         self.last_update = time.time()
+
+        self.on_push = on_push
 
         # History
         self.history = None
@@ -72,8 +67,8 @@ class Listener(Thread, websocket.WebSocketApp):
         log.debug('Message received:' + message)
         try:
             json_message = json.loads(message)
-            if json_message['type'] == 'tickle':
-                self.on_push()
+            if json_message["type"] != "nop":
+                self.on_push(json_message)
         except Exception as e:
             logging.exception(e)
 
@@ -85,4 +80,3 @@ class Listener(Thread, websocket.WebSocketApp):
 
     def run(self):
         self.run_forever()
-
