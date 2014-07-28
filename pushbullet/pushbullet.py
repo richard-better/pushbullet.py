@@ -16,15 +16,16 @@ class PushBullet(object):
         self.api_key = api_key
         self._json_header = {'Content-Type': 'application/json'}
 
+        self._session = requests.Session()
+        self._session.auth = (self.api_key, "")
+        self._session.headers.update(self._json_header)
+
         self._load_devices()
 
     def _load_devices(self):
         self.devices = []
 
-        self.session = requests.Session()
-        self.session.auth = (self.api_key, "")
-
-        resp = self.session.get(self.DEVICES_URL)
+        resp = self._session.get(self.DEVICES_URL)
         resp_dict = resp.json()
         device_list = resp_dict.get("devices", [])
 
@@ -41,7 +42,7 @@ class PushBullet(object):
         data = {"file_name": file_name, "file_type": file_type}
 
         # Request url for file upload
-        r = self.session.post(self.UPLOAD_REQUEST_URL, data=json.dumps(data), headers=self._json_header)
+        r = self._session.post(self.UPLOAD_REQUEST_URL, data=json.dumps(data))
         
         upload_data = r.json().get("data")
         file_url = r.json().get("file_url")
@@ -102,9 +103,7 @@ class PushBullet(object):
 
 
     def _push(self, data):
-        return requests.post(self.PUSH_URL, data=json.dumps(data),
-                             headers=self._json_header,
-                             auth=(self.api_key, ""))
+        return self._session.post(self.PUSH_URL, data=json.dumps(data))
 
     def refresh(self):
         self._load_devices()
