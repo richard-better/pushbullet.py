@@ -161,52 +161,52 @@ class PushBullet(object):
 
         return True, {"file_type": file_type, "file_url": file_url, "file_name": file_name}
 
-    def push_file(self, file_name, file_url, file_type, body=None, device=None, email=None):
+    def push_file(self, file_name, file_url, file_type, body=None, device=None, contact=None):
         data = {"type": "file", "file_type": file_type, "file_url": file_url, "file_name": file_name}
         if body:
             data["body"] = body
 
         if device:
             data["device_iden"] = device.device_iden
-        elif email:
-            data["email"] = email
+        elif contact:
+            data["email"] = contact.email
     
         return self._push(data)
     
-    def push_note(self, title, body, device=None, email=None):
+    def push_note(self, title, body, device=None, contact=None):
         data = {"type": "note", "title": title, "body": body}
         if device:
             data["device_iden"] = device.device_iden
-        elif email:
-            data["email"] = email
+        elif contact:
+            data["email"] = contact.email
 
         return self._push(data)
 
-    def push_address(self, name, address, device=None, email=None):
+    def push_address(self, name, address, device=None, contact=None):
         data = {"type": "address", "name": name, "address": address}
         if device:
             data["device_iden"] = device.device_iden
-        elif email:
-            data["email"] = email
+        elif contact:
+            data["email"] = contact.email
 
         return self._push(data)
 
-    def push_list(self, title, items, device=None, email=None):
+    def push_list(self, title, items, device=None, contact=None):
         data = {"type": "list", "title": title, "items": items}
         if device:
             data["device_iden"] = device.device_iden
-        elif email:
-            data["email"] = email
+        elif contact:
+            data["email"] = contact.email
 
         return self._push(data)
 
-    def push_link(self, title, url, body=None, device=None, email=None):
+    def push_link(self, title, url, body=None, device=None, contact=None):
         data = {"type": "link", "title": title, "url": url, "body": body}
 
         if device:
             data["device_iden"] = device.device_iden
-        elif email:
-            data["email"] = email
+        elif contact:
+            data["email"] = contact.email
 
         return self._push(data)
 
