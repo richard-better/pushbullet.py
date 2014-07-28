@@ -1,10 +1,11 @@
 __author__ = 'Igor Maculan <n3wtron@gmail.com>'
+
 import logging
-import requests
-from threading import Thread
 import time
 import json
+from threading import Thread
 
+import requests
 import websocket
 
 
@@ -25,21 +26,13 @@ class PushTypeNotProvided(Exception):
 class Listener(Thread, websocket.WebSocketApp):
     def __init__(self, api_key,
                  device_id=None,
-                 on_note=None,
-                 on_link=None,
-                 on_address=None,
-                 on_list=None,
-                 on_file=None,
+                 on_push=None,
                  http_proxy_host=None,
                  http_proxy_port=None):
         """
         :param api_key: pushbullet Key
         :param device_id: id of device to listen (if None listen all devices)
-        :param on_note: function like def on_note(pushed_note)
-        :param on_link: function like def on_link(pushed_link)
-        :param on_address: function like def on_address(pushed_address)
-        :param on_list: function like def on_list(pushed_list)
-        :param on_file: function like def on_file(pushed_file)
+        :param on_push: function that get's called on all pushes
         :param http_proxy_host: host proxy (ie localhost)
         :param http_proxy_port: host port (ie 3128)
         """
@@ -56,12 +49,6 @@ class Listener(Thread, websocket.WebSocketApp):
         # History
         self.history = None
         self.clean_history()
-        # specific pushes type methods
-        self.on_note = on_note
-        self.on_link = on_link
-        self.on_address = on_address
-        self.on_list = on_list
-        self.on_file = on_file
 
         # proxy configuration
         self.http_proxy_host = http_proxy_host
