@@ -20,12 +20,14 @@ class Device(object):
 		self.android_version = extras.get("android_version")
 		self.sdk_version = extras.get("sdk_version")
 		self.app_version = extras.get("app_version")
+		self.pushable = extras.get("pushable")
+		self.active = extras.get("active")
 
 		self._fullname = "{} {} {}".format(self.manufacturer,
 										   self.model, self.android_version)
 
-		nickname = extras.get("nickname")
-		self.name = nickname or self._fullname
+		self.nickname = extras.get("nickname")
+		#self.name = self.nickname
 
 		self._json_header = {'Content-Type': 'application/json'}
 
@@ -41,13 +43,13 @@ class Device(object):
 		data = {"type": "list", "title": title, "items": items}
 		return self._push(data, headers=self._json_header)
 
-	def push_file(self, file):
-		data = {"type": "file"}
+	def push_file(self, file, body):
+		data = {"type": "file", "body": body}
 		files = {"file": file}
 		return self._push(data, files=files)
 
-	def push_link(self, title, url):
-		data = {"type": "link", "title": title, "url": url}
+	def push_link(self, title, url, body):
+		data = {"type": "link", "title": title, "url": url, "body": body}
 		return self._push(data, headers=self._json_header)
 
 	def _push(self, data, headers={}, files = {}):
