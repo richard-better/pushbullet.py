@@ -54,6 +54,19 @@ class PushBullet(object):
         else:
             self.user_info = {}
 
+    @staticmethod
+    def _recipient(device=None, contact=None, email=None):
+        data = dict()
+
+        if device:
+            data["device_iden"] = device.device_iden
+        elif contact:
+            data["email"] = contact.email
+        elif email:
+            data["email"] = email
+
+        return data
+
     def new_device(self, nickname):
         data = {"nickname": nickname, "type": "stream"}
         r = self._session.post(self.DEVICES_URL, data=json.dumps(data))
@@ -65,7 +78,7 @@ class PushBullet(object):
             return False, None
 
     def new_contact(self, name, email):
-        data = {"name": nickname, "email": email}
+        data = {"name": name, "email": email}
         r = self._session.post(self.CONTACTS_URL, data=json.dumps(data))
         if r.status_code == requests.codes.ok:
             new_contact = Contact(self, r.json())
@@ -162,52 +175,40 @@ class PushBullet(object):
 
         return True, {"file_type": file_type, "file_url": file_url, "file_name": file_name}
 
-    def push_file(self, file_name, file_url, file_type, body=None, device=None, contact=None):
+    def push_file(self, file_name, file_url, file_type, body=None, device=None, contact=None, email=None):
         data = {"type": "file", "file_type": file_type, "file_url": file_url, "file_name": file_name}
         if body:
             data["body"] = body
 
-        if device:
-            data["device_iden"] = device.device_iden
-        elif contact:
-            data["email"] = contact.email
+        data.update(PushBullet._recipient(device, contact, email))
     
         return self._push(data)
     
-    def push_note(self, title, body, device=None, contact=None):
+    def push_note(self, title, body, device=None, contact=None, email=None):
         data = {"type": "note", "title": title, "body": body}
-        if device:
-            data["device_iden"] = device.device_iden
-        elif contact:
-            data["email"] = contact.email
+
+        data.update(PushBullet._recipient(device, contact, email))
 
         return self._push(data)
 
-    def push_address(self, name, address, device=None, contact=None):
+    def push_address(self, name, address, device=None, contact=None, email=None):
         data = {"type": "address", "name": name, "address": address}
-        if device:
-            data["device_iden"] = device.device_iden
-        elif contact:
-            data["email"] = contact.email
+
+        data.update(PushBullet._recipient(device, contact, email))
 
         return self._push(data)
 
-    def push_list(self, title, items, device=None, contact=None):
+    def push_list(self, title, items, device=None, contact=None, email=None):
         data = {"type": "list", "title": title, "items": items}
-        if device:
-            data["device_iden"] = device.device_iden
-        elif contact:
-            data["email"] = contact.email
+
+        data.update(PushBullet._recipient(device, contact, email))
 
         return self._push(data)
 
-    def push_link(self, title, url, body=None, device=None, contact=None):
+    def push_link(self, title, url, body=None, device=None, contact=None, email=None):
         data = {"type": "link", "title": title, "url": url, "body": body}
 
-        if device:
-            data["device_iden"] = device.device_iden
-        elif contact:
-            data["email"] = contact.email
+        data.update(PushBullet._recipient(device, contact, email))
 
         return self._push(data)
 
