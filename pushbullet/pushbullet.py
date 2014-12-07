@@ -1,10 +1,13 @@
 import json
 
 import requests
-import magic
+
 
 from .device import Device
 from .contact import Contact
+from .filetype import get_file_type
+
+
 
 class PushBullet(object):
 
@@ -165,9 +168,8 @@ class PushBullet(object):
 
     def upload_file(self, f, file_name, file_type=None):
         if not file_type:
-            file_type = magic.from_buffer(f.read(1024), mime=True)
-            f.seek(0)
-        
+            file_type = get_file_type(f, file_name)
+
         data = {"file_name": file_name, "file_type": file_type}
 
         # Request url for file upload
