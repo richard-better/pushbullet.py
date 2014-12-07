@@ -128,14 +128,23 @@ class PushBullet(object):
         else:
             return False, r.json()
 
-    def get_pushes(self, modified_after=None):
-        data = {"modified_after": modified_after}
-        r = self._session.get(self.PUSH_URL, params=data) 
+    def get_pushes(self, modified_after=None, limit=None):
+        data = {"modified_after": modified_after, "limit":limit}
 
-        if r.status_code == requests.codes.ok:
-            return True, r.json().get("pushes")
-        else:
-            return False, r.json()
+        pushes_list = []
+        get_more_pushes = True
+        while get_more_pushes:
+            r = self._session.get(self.PUSH_URL, params=data)
+            if r.status_code != requests.codes.ok:
+                return False, r.json()
+
+            pushes_list += r.json().get("pushes")
+            if 'cursor' in r.json() and (not limit or len(pushes_list) < limit):
+                data['cursor'] = r.json()['cursor']
+            else:
+                get_more_pushes = False
+
+        return True, pushes_list
 
     def dismiss_push(self, iden):
         data = {"dismissed": True}
