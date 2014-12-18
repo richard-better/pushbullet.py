@@ -71,7 +71,7 @@ class PushBullet(object):
             self.channels.append(c)
 
     @staticmethod
-    def _recipient(device=None, contact=None, email=None):
+    def _recipient(device=None, contact=None, email=None, channel=None):
         data = dict()
 
         if device:
@@ -80,6 +80,8 @@ class PushBullet(object):
             data["email"] = contact.email
         elif email:
             data["email"] = email
+        elif channel:
+            data["channel_tag"] = channel.channel_tag
 
         return data
 
@@ -199,12 +201,12 @@ class PushBullet(object):
 
         return True, {"file_type": file_type, "file_url": file_url, "file_name": file_name}
 
-    def push_file(self, file_name, file_url, file_type, body=None, device=None, contact=None, email=None):
+    def push_file(self, file_name, file_url, file_type, body=None, device=None, contact=None, email=None, channel=None):
         data = {"type": "file", "file_type": file_type, "file_url": file_url, "file_name": file_name}
         if body:
             data["body"] = body
 
-        data.update(PushBullet._recipient(device, contact, email))
+        data.update(PushBullet._recipient(device, contact, email, channel))
     
         return self._push(data)
     
