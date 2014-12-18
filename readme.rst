@@ -179,6 +179,31 @@ Of course, you can also delete devices, even those not added by you.
     success, error_message = pb.remove_device(listener)
 
 
+Channels
+~~~~~~~~~~~~
+
+You can also send pushes to channels. First, create a channel on the PushBullet
+website (also make sure to subscribe to that channel). All channels which
+belong to the current user can be retrieved as follows:
+
+.. code:: python
+    
+    # Get all channels created by the current user
+    print(pb.channels)
+    # [Channel('My Channel' 'channel_identifier')]
+
+    my_channel = pb.channels[0]
+
+Then you can send a push to all subscribers of this channel like so:
+
+.. code:: python
+    
+    success, push = my_channel.push_note("Hello Channel!", "Hello My Channel")
+
+Note that you can only push to channels which have been created by the current
+user.
+
+
 Contacts
 ~~~~~~~~~~~~
 
