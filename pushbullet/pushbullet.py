@@ -4,6 +4,7 @@ import requests
 
 
 from .device import Device
+from .channel import Channel
 from .contact import Contact
 from .filetype import get_file_type
 
@@ -13,6 +14,7 @@ class PushBullet(object):
 
     DEVICES_URL = "https://api.pushbullet.com/v2/devices"
     CONTACTS_URL = "https://api.pushbullet.com/v2/contacts"
+    CHANNELS_URL = "https://api.pushbullet.com/v2/channels"
     ME_URL = "https://api.pushbullet.com/v2/users/me"
     PUSH_URL = "https://api.pushbullet.com/v2/pushes"
     UPLOAD_REQUEST_URL = "https://api.pushbullet.com/v2/upload-request"
@@ -56,6 +58,17 @@ class PushBullet(object):
             self.user_info = r.json()
         else:
             self.user_info = {}
+
+    def _load_channels(self):
+        self.channels = []
+
+        resp = self._session.get(self.CHANNELS_URL)
+        resp_dict = resp.json()
+        channel_list = resp_dict.get("channels", [])
+
+        for channel_info in channel_list:
+            c = Channel(self, channel_info)
+            self.channels.append(c)
 
     @staticmethod
     def _recipient(device=None, contact=None, email=None):
@@ -235,3 +248,4 @@ class PushBullet(object):
         self._load_devices()
         self._load_contacts()
         self._load_user_info()
+        self._load_channels()
