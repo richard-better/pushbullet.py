@@ -6,6 +6,7 @@ import requests
 from .device import Device
 from .channel import Channel
 from .contact import Contact
+from .invalid_key_error import InvalidKeyError
 from .filetype import get_file_type
 
 
@@ -30,11 +31,18 @@ class PushBullet(object):
 
         self.refresh()
 
+    def _get_data(self, url):
+        resp = self._session.get(url)
+
+        if resp.status_code == 401:
+            raise InvalidKeyError()
+
+        return resp.json()
+
     def _load_devices(self):
         self.devices = []
 
-        resp = self._session.get(self.DEVICES_URL)
-        resp_dict = resp.json()
+        resp_dict = self._get_data(self.DEVICES_URL)
         device_list = resp_dict.get("devices", [])
 
         for device_info in device_list:
@@ -44,8 +52,7 @@ class PushBullet(object):
     def _load_contacts(self):
         self.contacts = []
 
-        resp = self._session.get(self.CONTACTS_URL)
-        resp_dict = resp.json()
+        resp_dict = self._get_data(self.CONTACTS_URL)
         contacts_list = resp_dict.get("contacts", [])
 
         for contact_info in contacts_list:
@@ -53,17 +60,12 @@ class PushBullet(object):
             self.contacts.append(c)
 
     def _load_user_info(self):
-        r = self._session.get(self.ME_URL)
-        if r.status_code == requests.codes.ok:
-            self.user_info = r.json()
-        else:
-            self.user_info = {}
+        self.user_info = self._get_data(self.ME_URL)
 
     def _load_channels(self):
         self.channels = []
 
-        resp = self._session.get(self.CHANNELS_URL)
-        resp_dict = resp.json()
+        resp_dict = self._get_data(self.CHANNELS_URL)
         channel_list = resp_dict.get("channels", [])
 
         for channel_info in channel_list:
