@@ -1,6 +1,9 @@
 PushBullet.py
 =============
 
+.. image:: https://travis-ci.org/randomchars/pushbullet.py.svg
+    :target: https://travis-ci.org/randomchars/pushbullet.py
+
 This is a python library for the wonderful
 `PushBullet <https://www.pushbullet.com>`__ service. It allows you to
 send push notifications to
@@ -118,7 +121,7 @@ Pushes is a list containg dictionaries that have push data. You can use this dat
 
     # Now delete it
     success, error_message = pb.delete_push(lates.get("iden"))
-    
+
 
 Pushing to specific devices
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -153,7 +156,7 @@ Creating new devices
 Creating a new device is easy too, you only need to specify a name for it.
 
 .. code:: python
-    
+
     success, listener = pb.new_device("Listener")
 
 Now you can use it like any other device.
@@ -187,7 +190,7 @@ website (also make sure to subscribe to that channel). All channels which
 belong to the current user can be retrieved as follows:
 
 .. code:: python
-    
+
     # Get all channels created by the current user
     print(pb.channels)
     # [Channel('My Channel' 'channel_identifier')]
@@ -197,7 +200,7 @@ belong to the current user can be retrieved as follows:
 Then you can send a push to all subscribers of this channel like so:
 
 .. code:: python
-    
+
     success, push = my_channel.push_note("Hello Channel!", "Hello My Channel")
 
 Note that you can only push to channels which have been created by the current
@@ -231,7 +234,7 @@ Adding new contacts
 ^^^^^^^^^^^^^^^^^^^^
 
 .. code:: python
-    
+
     success, bob = pb.new_contact("Bob", "bob@gmail.com")
 
 Editing contacts
@@ -257,9 +260,9 @@ Error checking
 Most methods return a tuple containing a bool value indicating success or failure, and the response from the server.
 
 .. code:: Python
-    
+
     success, push = pb.push_note("Hello world!", "We're using the api.")
-    
+
 
 The `pushbullet api documetation <https://www.pushbullet.com/api>`__
 contains a list of possible status codes.
