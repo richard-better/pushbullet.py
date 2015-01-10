@@ -57,8 +57,9 @@ class PushBullet(object):
         contacts_list = resp_dict.get("contacts", [])
 
         for contact_info in contacts_list:
-            c = Contact(self, contact_info)
-            self.contacts.append(c)
+            if contact_info.get("active"):
+                c = Contact(self, contact_info)
+                self.contacts.append(c)
 
     def _load_user_info(self):
         self.user_info = self._get_data(self.ME_URL)
@@ -70,8 +71,9 @@ class PushBullet(object):
         channel_list = resp_dict.get("channels", [])
 
         for channel_info in channel_list:
-            c = Channel(self, channel_info)
-            self.channels.append(c)
+            if channel_info.get("active"):
+                c = Channel(self, channel_info)
+                self.channels.append(c)
 
     @staticmethod
     def _recipient(device=None, contact=None, email=None, channel=None):
