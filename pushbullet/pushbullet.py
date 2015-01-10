@@ -46,8 +46,9 @@ class PushBullet(object):
         device_list = resp_dict.get("devices", [])
 
         for device_info in device_list:
-            d = Device(self, device_info)
-            self.devices.append(d)
+            if device_info.get("active"):
+                d = Device(self, device_info)
+                self.devices.append(d)
 
     def _load_contacts(self):
         self.contacts = []
@@ -169,15 +170,15 @@ class PushBullet(object):
     def dismiss_push(self, iden):
         data = {"dismissed": True}
         r = self._session.post("{}/{}".format(self.PUSH_URL, iden), data=json.dumps(data))
- 
+
         if r.status_code == requests.codes.ok:
             return True, r.json()
         else:
-            return False, r.json()  
+            return False, r.json()
 
     def delete_push(self, iden):
         r = self._session.delete("{}/{}".format(self.PUSH_URL, iden))
- 
+
         if r.status_code == requests.codes.ok:
             return True, r.json()
         else:
@@ -194,7 +195,7 @@ class PushBullet(object):
 
         if r.status_code != requests.codes.ok:
             return False, r.json()
-        
+
         upload_data = r.json().get("data")
         file_url = r.json().get("file_url")
         upload_url = r.json().get("upload_url")
@@ -209,9 +210,9 @@ class PushBullet(object):
             data["body"] = body
 
         data.update(PushBullet._recipient(device, contact, email, channel))
-    
+
         return self._push(data)
-    
+
     def push_note(self, title, body, device=None, contact=None, email=None):
         data = {"type": "note", "title": title, "body": body}
 
