@@ -1,7 +1,9 @@
 import os
+import uuid
 import sys
 
 from setuptools import setup
+from pip.req import parse_requirements
 
 with open("./pushbullet/__version__.py") as version_file:
     version = version_file.read().split("\"")[1]
@@ -9,6 +11,9 @@ with open("./pushbullet/__version__.py") as version_file:
 if sys.argv[-1] == 'publish':
     os.system('python setup.py sdist upload')
     sys.exit()
+
+install_reqs = parse_requirements("requirements.txt",  session=uuid.uuid1())
+
 
 
 def read(fname):
@@ -42,9 +47,5 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Utilities"
     ],
-    install_requires=[
-          'requests>=1.0.0',
-          'python-magic',
-          'websocket-client',
-      ]
+    install_requires=[str(ir.req) for ir in install_reqs]
 )
