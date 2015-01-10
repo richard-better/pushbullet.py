@@ -13,8 +13,10 @@ env:
 deploy:
   provider: pypi
   user: randomchars
-  password:
-    secure: L8FjGe1aEDv7QJyv54HLhDoD3a5dze8xziGwW/Pjj1QBkyBPw9gwN65/T7VugU+GV1pPLcC8ESN0O+LdEQ9BHnQ7Jgm/xjKC6Ncmq+1I+RGdQRyM/Fqv5fHeTGhi5iimYeKzf07gBC7NzAy1smDMJm9MNY6RRqaInChdanjHvcQ=
   on:
     tags: true
-  distributions: "sdist bdist_wheel"
+    all_branches: true
+    python: '3.4'
+  distributions: sdist bdist_wheel
+  password:
+    secure: AF3VwPWZS4wDEuwhixbYJyF5jgWccAusPOq4ZdVOGzOmxAnc4DSuEr3sx6Z9HC3Svnw6nncbwx7nCCfrhX9va68xKiyNzkwa2jWnHWWKiYbGIY5oOsy728ElUA3cBg3fJWQy/+5wWdoS4a21jYw1MtqgVmMgEV3V3MvAy5nz98A=
