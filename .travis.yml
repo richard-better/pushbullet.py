@@ -1,10 +1,13 @@
 language: python
 python:
-  - "2.6"
-  - "2.7"
-  - "3.2"
-  - "3.3"
-  - "3.4"
+- '2.6'
+- '2.7'
+- '3.2'
+- '3.3'
+- '3.4'
 install:
-  - "pip install ."
+- pip install .
 script: py.test
+env:
+  # This key belongs to a dummy account specifically created for testing.
+  - PUSHBULLET_API_KEY=RrFnc1xaeQXnRrr2auoGA1e8pQ8MWmMF
