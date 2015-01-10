@@ -9,5 +9,12 @@ install:
 - pip install .
 script: py.test
 env:
-  # This key belongs to a dummy account specifically created for testing.
-  - PUSHBULLET_API_KEY=RrFnc1xaeQXnRrr2auoGA1e8pQ8MWmMF
+- PUSHBULLET_API_KEY=RrFnc1xaeQXnRrr2auoGA1e8pQ8MWmMF
+deploy:
+  provider: pypi
+  user: randomchars
+  password:
+    secure: L8FjGe1aEDv7QJyv54HLhDoD3a5dze8xziGwW/Pjj1QBkyBPw9gwN65/T7VugU+GV1pPLcC8ESN0O+LdEQ9BHnQ7Jgm/xjKC6Ncmq+1I+RGdQRyM/Fqv5fHeTGhi5iimYeKzf07gBC7NzAy1smDMJm9MNY6RRqaInChdanjHvcQ=
+  on:
+    tags: true
+  distributions: "sdist bdist_wheel"
