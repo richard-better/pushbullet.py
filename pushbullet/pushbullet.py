@@ -4,7 +4,9 @@ import requests
 
 
 from .device import Device
+from .channel import Channel
 from .contact import Contact
+from .invalid_key_error import InvalidKeyError
 from .filetype import get_file_type
 
 
@@ -13,6 +15,7 @@ class PushBullet(object):
 
     DEVICES_URL = "https://api.pushbullet.com/v2/devices"
     CONTACTS_URL = "https://api.pushbullet.com/v2/contacts"
+    CHANNELS_URL = "https://api.pushbullet.com/v2/channels"
     ME_URL = "https://api.pushbullet.com/v2/users/me"
     PUSH_URL = "https://api.pushbullet.com/v2/pushes"
     UPLOAD_REQUEST_URL = "https://api.pushbullet.com/v2/upload-request"
@@ -28,11 +31,18 @@ class PushBullet(object):
 
         self.refresh()
 
+    def _get_data(self, url):
+        resp = self._session.get(url)
+
+        if resp.status_code == 401:
+            raise InvalidKeyError()
+
+        return resp.json()
+
     def _load_devices(self):
         self.devices = []
 
-        resp = self._session.get(self.DEVICES_URL)
-        resp_dict = resp.json()
+        resp_dict = self._get_data(self.DEVICES_URL)
         device_list = resp_dict.get("devices", [])
 
         for device_info in device_list:
@@ -42,8 +52,7 @@ class PushBullet(object):
     def _load_contacts(self):
         self.contacts = []
 
-        resp = self._session.get(self.CONTACTS_URL)
-        resp_dict = resp.json()
+        resp_dict = self._get_data(self.CONTACTS_URL)
         contacts_list = resp_dict.get("contacts", [])
 
         for contact_info in contacts_list:
@@ -51,14 +60,20 @@ class PushBullet(object):
             self.contacts.append(c)
 
     def _load_user_info(self):
-        r = self._session.get(self.ME_URL)
-        if r.status_code == requests.codes.ok:
-            self.user_info = r.json()
-        else:
-            self.user_info = {}
+        self.user_info = self._get_data(self.ME_URL)
+
+    def _load_channels(self):
+        self.channels = []
+
+        resp_dict = self._get_data(self.CHANNELS_URL)
+        channel_list = resp_dict.get("channels", [])
+
+        for channel_info in channel_list:
+            c = Channel(self, channel_info)
+            self.channels.append(c)
 
     @staticmethod
-    def _recipient(device=None, contact=None, email=None):
+    def _recipient(device=None, contact=None, email=None, channel=None):
         data = dict()
 
         if device:
@@ -67,6 +82,8 @@ class PushBullet(object):
             data["email"] = contact.email
         elif email:
             data["email"] = email
+        elif channel:
+            data["channel_tag"] = channel.channel_tag
 
         return data
 
@@ -186,12 +203,12 @@ class PushBullet(object):
 
         return True, {"file_type": file_type, "file_url": file_url, "file_name": file_name}
 
-    def push_file(self, file_name, file_url, file_type, body=None, device=None, contact=None, email=None):
+    def push_file(self, file_name, file_url, file_type, body=None, device=None, contact=None, email=None, channel=None):
         data = {"type": "file", "file_type": file_type, "file_url": file_url, "file_name": file_name}
         if body:
             data["body"] = body
 
-        data.update(PushBullet._recipient(device, contact, email))
+        data.update(PushBullet._recipient(device, contact, email, channel))
     
         return self._push(data)
     
@@ -235,3 +252,4 @@ class PushBullet(object):
         self._load_devices()
         self._load_contacts()
         self._load_user_info()
+        self._load_channels()
