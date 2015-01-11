@@ -21,4 +21,4 @@ class Contact(Device):
 
 	@use_appropriate_encoding
 	def __str__(self):
-		return "Contact('{}' <{}>)".format(self.name, self.email_normalized)
+		return "Contact('{0}' <{1}>)".format(self.name, self.email_normalized)

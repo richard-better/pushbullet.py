@@ -40,7 +40,7 @@ class Device(object):
 
 	@use_appropriate_encoding
 	def __str__(self):
-		return "Device('{}')".format(self.nickname or ("{} {}".format(self.manufacturer or self.model)))
+		return "Device('{0}')".format(self.nickname or ("{0} {1}".format(self.manufacturer or self.model)))
 
 	def __repr__(self):
 		return self.__str__()

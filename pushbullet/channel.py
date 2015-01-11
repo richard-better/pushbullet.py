@@ -36,7 +36,7 @@ class Channel(object):
 
     @use_appropriate_encoding
     def __str__(self):
-        return "Channel(name: '{}' tag: '{}')".format(self.name, self.channel_tag)
+        return "Channel(name: '{0}' tag: '{1}')".format(self.name, self.channel_tag)
 
     def __repr__(self):
         return self.__str__()
