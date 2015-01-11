@@ -4,6 +4,9 @@ PushBullet.py
 .. image:: https://img.shields.io/travis/randomchars/pushbullet.py.svg?style=flat-square
     :target: https://travis-ci.org/randomchars/pushbullet.py
 
+.. image:: https://img.shields.io/coveralls/randomchars/pushbullet.py.svg?style=flat-square
+    :target: https://coveralls.io/r/randomchars/pushbullet.py
+
 .. image:: https://img.shields.io/pypi/dm/pushbullet.py.svg?style=flat-square
     :target https://pypi.python.org/pypi?name=pushbullet.py&:action=display
 
