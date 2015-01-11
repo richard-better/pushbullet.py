@@ -4,7 +4,7 @@ import requests
 from .device import Device
 from .channel import Channel
 from .contact import Contact
-from .invalid_key_error import InvalidKeyError
+from .errors import PushBulletError, InvalidKeyError, PushError
 from .filetype import get_file_type
 
 
@@ -92,9 +92,9 @@ class PushBullet(object):
         if r.status_code == requests.codes.ok:
             new_device = Device(self, r.json())
             self.devices.append(new_device)
-            return True, new_device
+            return new_device
         else:
-            return False, None
+            raise PushBulletError(r.text)
 
     def new_contact(self, name, email):
         data = {"name": name, "email": email}
@@ -102,9 +102,9 @@ class PushBullet(object):
         if r.status_code == requests.codes.ok:
             new_contact = Contact(self, r.json())
             self.contacts.append(new_contact)
-            return True, new_contact
+            return new_contact
         else:
-            return False, None
+            raise PushBulletError(r.text)
 
     def edit_device(self, device, nickname=None, model=None, manufacturer=None):
         data = {"nickname": nickname}
@@ -113,9 +113,10 @@ class PushBullet(object):
         if r.status_code == requests.codes.ok:
             new_device = Device(self, r.json())
             self.devices[self.devices.index(device)] = new_device
-            return True, new_device
+            return new_device
         else:
-            return False, device
+            raise PushBulletError(r.text)
+
 
     def edit_contact(self, contact, name):
         data = {"name": name}
@@ -124,27 +125,29 @@ class PushBullet(object):
         if r.status_code == requests.codes.ok:
             new_contact = Contact(self, r.json())
             self.contacts[self.contacts.index(contact)] = new_contact
-            return True, new_contact
+            return new_contact
         else:
-            return False, contact
+            raise PushBulletError(r.text)
+
 
     def remove_device(self, device):
         iden = device.device_iden
         r = self._session.delete("{}/{}".format(self.DEVICES_URL, iden))
         if r.status_code == requests.codes.ok:
             self.devices.remove(device)
-            return True, r.json()
+            return True
         else:
-            return False, r.json()
+            raise PushBulletError(r.text)
+
 
     def remove_contact(self, contact):
         iden = contact.iden
         r = self._session.delete("{}/{}".format(self.CONTACTS_URL, iden))
         if r.status_code == requests.codes.ok:
             self.contacts.remove(contact)
-            return True, r.json()
+            return True
         else:
-            return False, r.json()
+            raise PushBulletError(r.text)
 
     def get_pushes(self, modified_after=None, limit=None):
         data = {"modified_after": modified_after, "limit": limit}
@@ -154,7 +157,7 @@ class PushBullet(object):
         while get_more_pushes:
             r = self._session.get(self.PUSH_URL, params=data)
             if r.status_code != requests.codes.ok:
-                return False, r.json()
+                raise PushBulletError(r.text)
 
             pushes_list += r.json().get("pushes")
             if 'cursor' in r.json() and (not limit or len(pushes_list) < limit):
@@ -169,17 +172,17 @@ class PushBullet(object):
         r = self._session.post("{}/{}".format(self.PUSH_URL, iden), data=json.dumps(data))
 
         if r.status_code == requests.codes.ok:
-            return True, r.json()
+            return True
         else:
-            return False, r.json()
+            raise PushBulletError(r.text)
 
     def delete_push(self, iden):
         r = self._session.delete("{}/{}".format(self.PUSH_URL, iden))
 
         if r.status_code == requests.codes.ok:
-            return True, r.json()
+            return True
         else:
-            return False, r.json()
+            raise PushBulletError(r.text)
 
     def upload_file(self, f, file_name, file_type=None):
         if not file_type:
@@ -191,7 +194,7 @@ class PushBullet(object):
         r = self._session.post(self.UPLOAD_REQUEST_URL, data=json.dumps(data))
 
         if r.status_code != requests.codes.ok:
-            return False, r.json()
+            raise PushBulletError(r.text)
 
         upload_data = r.json().get("data")
         file_url = r.json().get("file_url")
@@ -199,7 +202,7 @@ class PushBullet(object):
 
         upload = requests.post(upload_url, data=upload_data, files={"file": f})
 
-        return True, {"file_type": file_type, "file_url": file_url, "file_name": file_name}
+        return {"file_type": file_type, "file_url": file_url, "file_name": file_name}
 
     def push_file(self, file_name, file_url, file_type, body=None, device=None, contact=None, email=None, channel=None):
         data = {"type": "file", "file_type": file_type, "file_url": file_url, "file_name": file_name}
@@ -242,9 +245,9 @@ class PushBullet(object):
         r = self._session.post(self.PUSH_URL, data=json.dumps(data))
 
         if r.status_code == requests.codes.ok:
-            return True, r.json()
+            return r.json()
         else:
-            return False, r.json()
+            raise PushError(r.text)
 
     def refresh(self):
         self._load_devices()
