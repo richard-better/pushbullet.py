@@ -7,7 +7,8 @@ python:
 - '3.4'
 install:
 - pip install .
-script: py.test
+- pip install coveralls
+script: coverage run --source pushbullet -m py.test
 env:
 - PUSHBULLET_API_KEY=RrFnc1xaeQXnRrr2auoGA1e8pQ8MWmMF
 deploy:
@@ -20,3 +21,5 @@ deploy:
   distributions: sdist bdist_wheel
   password:
     secure: AF3VwPWZS4wDEuwhixbYJyF5jgWccAusPOq4ZdVOGzOmxAnc4DSuEr3sx6Z9HC3Svnw6nncbwx7nCCfrhX9va68xKiyNzkwa2jWnHWWKiYbGIY5oOsy728ElUA3cBg3fJWQy/+5wWdoS4a21jYw1MtqgVmMgEV3V3MvAy5nz98A=
+after_success:
+  coveralls
