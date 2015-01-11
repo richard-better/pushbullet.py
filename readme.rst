@@ -1,8 +1,16 @@
 PushBullet.py
 =============
 
-.. image:: https://travis-ci.org/randomchars/pushbullet.py.svg
+.. image:: https://img.shields.io/travis/randomchars/pushbullet.py.svg?style=flat-square
     :target: https://travis-ci.org/randomchars/pushbullet.py
+
+.. image:: https://img.shields.io/pypi/dm/pushbullet.py.svg?style=flat-square
+    :target https://pypi.python.org/pypi?name=pushbullet.py&:action=display
+
+.. image:: https://img.shields.io/pypi/v/pushbullet.py.svg?style=flat-square
+    :target https://pypi.python.org/pypi?name=pushbullet.py&:action=display
+
+.. image:: https://img.shields.io/pypi/l/pushbullet.py.svg
 
 This is a python library for the wonderful
 `PushBullet <https://www.pushbullet.com>`__ service. It allows you to
