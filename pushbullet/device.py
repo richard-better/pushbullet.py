@@ -1,3 +1,7 @@
+from __future__ import unicode_literals
+
+from .helpers import use_appropriate_encoding
+
 class Device(object):
 
 	def __init__(self, account, device_info):
@@ -34,6 +38,7 @@ class Device(object):
 		data["device_iden"] = self.device_iden
 		return self._account._push(data)
 
+	@use_appropriate_encoding
 	def __str__(self):
 		return "Device('{}')".format(self.nickname or ("{} {}".format(self.manufacturer or self.model)))
 

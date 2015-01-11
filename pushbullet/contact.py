@@ -1,3 +1,7 @@
+from __future__ import unicode_literals
+
+from .helpers import use_appropriate_encoding
+
 from .device import Device
 
 class Contact(Device):
@@ -15,5 +19,6 @@ class Contact(Device):
 		data["email"] = self.email
 		return self._account._push(data)
 
+	@use_appropriate_encoding
 	def __str__(self):
 		return "Contact('{}' <{}>)".format(self.name, self.email_normalized)
