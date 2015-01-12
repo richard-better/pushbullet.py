@@ -13,6 +13,7 @@ log = logging.getLogger('pushbullet.Listener')
 
 WEBSOCKET_URL = 'wss://stream.pushbullet.com/websocket/'
 
+
 class Listener(Thread, websocket.WebSocketApp):
     def __init__(self, account,
                  on_push=None,

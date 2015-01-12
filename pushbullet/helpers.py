@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 import sys
 
+
 def use_appropriate_encoding(fn):
 
     if sys.version_info[0] < 3:

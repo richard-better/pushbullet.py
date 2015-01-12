@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from .helpers import use_appropriate_encoding
 
+
 class Channel(object):
 
     def __init__(self, account, channel_info):

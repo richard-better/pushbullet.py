@@ -1,14 +1,11 @@
 import json
-
 import requests
-
 
 from .device import Device
 from .channel import Channel
 from .contact import Contact
 from .invalid_key_error import InvalidKeyError
 from .filetype import get_file_type
-
 
 
 class PushBullet(object):
@@ -19,7 +16,6 @@ class PushBullet(object):
     ME_URL = "https://api.pushbullet.com/v2/users/me"
     PUSH_URL = "https://api.pushbullet.com/v2/pushes"
     UPLOAD_REQUEST_URL = "https://api.pushbullet.com/v2/upload-request"
-
 
     def __init__(self, api_key):
         self.api_key = api_key
@@ -124,8 +120,7 @@ class PushBullet(object):
     def edit_contact(self, contact, name):
         data = {"name": name}
         iden = contact.iden
-        r = self._session.post("{}/{}".format(self.CONTACTS_URL, iden),
-                                data=json.dumps(data))
+        r = self._session.post("{}/{}".format(self.CONTACTS_URL, iden), data=json.dumps(data))
         if r.status_code == requests.codes.ok:
             new_contact = Contact(self, r.json())
             self.contacts[self.contacts.index(contact)] = new_contact
@@ -152,7 +147,7 @@ class PushBullet(object):
             return False, r.json()
 
     def get_pushes(self, modified_after=None, limit=None):
-        data = {"modified_after": modified_after, "limit":limit}
+        data = {"modified_after": modified_after, "limit": limit}
 
         pushes_list = []
         get_more_pushes = True
