@@ -1,8 +1,6 @@
 from __future__ import print_function
 
-import os
 import mock
-import pytest
 import time
 
 from pushbullet import device
@@ -59,7 +57,7 @@ class TestDevices(object):
         self.device.push_file(file_name, file_url, file_type, body)
         self.account.push_file.assert_called_with(file_name, file_url, file_type, body, device=self.device)
 
-    def test_account_push(self):
+    def test_push(self):
         data = {"title": "test title"}
         self.device._push(data)
         pushed_data = {"title": "test title", "device_iden": self.device_iden}
