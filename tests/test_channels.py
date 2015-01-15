@@ -20,6 +20,9 @@ class TestChannels(object):
         # cause any errors.
         print(self.channel)
 
+    def test_repr(self):
+        assert repr(self.channel) == "Channel(name: 'test channel' tag: '%s')" % self.channel_tag
+        
     def test_push_note(self):
         title = "test title"
         body = "test body"
@@ -62,3 +65,5 @@ class TestChannels(object):
         self.channel._push(data)
         pushed_data = {"title": "test title", "channel_tag": self.channel_tag}
         self.account._push.assert_called_with(pushed_data)
+
+
