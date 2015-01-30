@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from .helpers import use_appropriate_encoding
 
+
 class Channel(object):
 
     def __init__(self, account, channel_info):
@@ -9,7 +10,7 @@ class Channel(object):
         self.channel_tag = channel_info.get("tag")
 
         for attr in ("name", "description", "created", "modified"):
-                setattr(self, attr, channel_info.get(attr))
+            setattr(self, attr, channel_info.get(attr))
 
     def push_note(self, title, body):
         data = {"type": "note", "title": title, "body": body}
