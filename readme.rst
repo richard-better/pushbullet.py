@@ -59,6 +59,8 @@ Authentication
 
     pb = PushBullet(api_key)
 
+If your key is invalid (that is, the Pushbullet API returns a ``401``), an ``InvalidKeyError`` is raised.
+
 Pushing things
 ~~~~~~~~~~~~~~
 
@@ -67,7 +69,9 @@ Pushing a text note
 
 .. code:: python
 
-    success, push = pb.push_note("This is the title", "This is the body".)
+    push = pb.push_note("This is the title", "This is the body".)
+
+``push`` is a dictionary containing the data returned by the Pushbullet API.
 
 Pushing an address
 ^^^^^^^^^^^^^^^^^^
@@ -75,7 +79,7 @@ Pushing an address
 .. code:: python
 
     address = " 25 E 85th St, 10028 New York, NY"
-    success, push = pb.push_address("home", address)
+    push = pb.push_address("home", address)
 
 Pushing a list
 ^^^^^^^^^^^^^^
@@ -83,14 +87,14 @@ Pushing a list
 .. code:: python
 
     to_buy = ["milk", "bread", "cider"]
-    success, push = phone.push_list("Shopping list", to_buy)
+    push = phone.push_list("Shopping list", to_buy)
 
 Pushing a link
 ^^^^^^^^^^^^^^
 
 .. code:: python
 
-    success, push = phone.push_link("Cool site", "https://github.com")
+    push = phone.push_link("Cool site", "https://github.com")
 
 Pushing a file
 ^^^^^^^^^^^^^^
@@ -100,9 +104,11 @@ Pushing files is a two part process. First you need to upload the file, and afte
 .. code:: python
 
     with open("my_cool_picture.jpg", "rb") as pic:
-        success, file_data = pb.upload_file(pic, "picture.jpg")
+        file_data = pb.upload_file(pic, "picture.jpg")
 
-    success, push = pb.push_file(**file_data)
+    push = pb.push_file(**file_data)
+
+``upload_file`` returns a dictionary containing  ``file_type``, ``file_url`` and ``file_name`` keys. These are the same parameters that ``push_file`` take.
 
 
 The advantage of this is that if you already have a file uploaded somewhere, you can use that instead of uploading again. For example:
@@ -110,7 +116,7 @@ The advantage of this is that if you already have a file uploaded somewhere, you
 
 .. code:: python
 
-    success, push = pb.push_file(file_url="https://i.imgur.com/IAYZ20i.jpg", file_name="cat.jpg", file_type="image/jpeg")
+    push = pb.push_file(file_url="https://i.imgur.com/IAYZ20i.jpg", file_name="cat.jpg", file_type="image/jpeg")
 
 Working with pushes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -119,20 +125,21 @@ You can also view all previous pushes:
 
 .. code:: python
 
-    success, pushes = pb.get_pushes()
+    pushes = pb.get_pushes()
 
-Pushes is a list containg dictionaries that have push data. You can use this data to dismiss notifications or delete pushes.
+Pushes is a list containig dictionaries that have push data. You can use this data to dismiss notifications or delete pushes.
 
 .. code:: python
 
     latest = pushes[0]
 
     # We already read it, so let's dismiss it
-    success, error_message = pb.dismiss_push(lates.get("iden"))
+    pb.dismiss_push(latest.get("iden"))
 
     # Now delete it
-    success, error_message = pb.delete_push(lates.get("iden"))
+    pb.delete_push(latest.get("iden"))
 
+Both of these raise ``PushBulletError`` if there's an error.
 
 Pushing to specific devices
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -153,13 +160,13 @@ Now we can use the device objects like we did with `pb`:
 
 .. code:: python
 
-    success, push = motog.push_note("Hello world!", "We're using the api.")
+    push = motog.push_note("Hello world!", "We're using the api.")
 
 Alternatively we can pass the device to push methods:
 
 .. code:: python
 
-    success, push = pb.push_note("Hello world!", "We're using the api.", device=motog)
+    push = pb.push_note("Hello world!", "We're using the api.", device=motog)
 
 Creating new devices
 ^^^^^^^^^^^^^^^^^^^^
@@ -168,7 +175,7 @@ Creating a new device is easy too, you only need to specify a name for it.
 
 .. code:: python
 
-    success, listener = pb.new_device("Listener")
+    listener = pb.new_device("Listener")
 
 Now you can use it like any other device.
 
@@ -179,8 +186,8 @@ You can change the nickname, the manufacturer and the model of the device:
 
 .. code:: python
 
-    success, listener = pb.edit_device(listener, make="Python", model="3.4.1")
-    success, motog = pb.edit_device(motog, nickname="My MotoG")
+    listener = pb.edit_device(listener, make="Python", model="3.4.1")
+    motog = pb.edit_device(motog, nickname="My MotoG")
 
 
 Deleting devices
@@ -190,8 +197,9 @@ Of course, you can also delete devices, even those not added by you.
 
 .. code:: python
 
-    success, error_message = pb.remove_device(listener)
+    pb.remove_device(listener)
 
+A ``PushBulletError`` is raised on error.
 
 Channels
 ~~~~~~~~~~~~
@@ -212,7 +220,7 @@ Then you can send a push to all subscribers of this channel like so:
 
 .. code:: python
 
-    success, push = my_channel.push_note("Hello Channel!", "Hello My Channel")
+    push = my_channel.push_note("Hello Channel!", "Hello My Channel")
 
 Note that you can only push to channels which have been created by the current
 user.
@@ -229,16 +237,16 @@ Contacts work just like devices:
     print(pb.contacts)
     # [Contact('Peter' <peter@gmail.com>), Contact('Sophie' <sophie@gmail.com>]
 
-    sophie = pb.contacs[1]
+    sophie = pb.contacts[1]
 
 Now we can use the contact objects like we did with `pb` or with the devices.:
 
 .. code:: python
 
-    success, push = sophie.push_note("Hello world!", "We're using the api.")
+    push = sophie.push_note("Hello world!", "We're using the api.")
 
     # Or:
-    success, push = pb.push_note("Hello world!", "We're using the api.", contact=sophie)
+    push = pb.push_note("Hello world!", "We're using the api.", contact=sophie)
 
 
 Adding new contacts
@@ -246,7 +254,7 @@ Adding new contacts
 
 .. code:: python
 
-    success, bob = pb.new_contact("Bob", "bob@gmail.com")
+    bob = pb.new_contact("Bob", "bob@gmail.com")
 
 Editing contacts
 ^^^^^^^^^^^^^^^^^
@@ -255,25 +263,22 @@ You can change the name of any contact:
 
 .. code:: python
 
-    success, bob = pb.edit_contact(bob, "bobby")
+    bob = pb.edit_contact(bob, "bobby")
 
 Deleting contacts
 ^^^^^^^^^^^^^^^^^^^
 
 .. code:: python
 
-    success, error_message = pb.remove_contact(bob)
+    pb.remove_contact(bob)
 
 
 Error checking
 ~~~~~~~~~~~~~~
 
-Most methods return a tuple containing a bool value indicating success or failure, and the response from the server.
-
-.. code:: Python
-
-    success, push = pb.push_note("Hello world!", "We're using the api.")
-
+If the Pushbullet api returns an error code a ``PushError`` an __
+``InvalidKeyError`` or a ``PushBulletError`` is raised. The first __
+two are both subclasses of ``PushBulletError``
 
 The `pushbullet api documetation <https://www.pushbullet.com/api>`__
 contains a list of possible status codes.
@@ -281,8 +286,7 @@ contains a list of possible status codes.
 TODO
 ----
 
--  Websocket support
--  Tests, tests, tests. Write them.
+-  More tests. Write them all.
 
 License
 -------
