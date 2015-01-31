@@ -16,6 +16,7 @@ class Pushbullet(object):
     ME_URL = "https://api.pushbullet.com/v2/users/me"
     PUSH_URL = "https://api.pushbullet.com/v2/pushes"
     UPLOAD_REQUEST_URL = "https://api.pushbullet.com/v2/upload-request"
+    EPHEMERALS_URL = "https://api.pushbullet.com/v2/ephemerals"
 
     def __init__(self, api_key):
         self.api_key = api_key
@@ -243,6 +244,24 @@ class Pushbullet(object):
             return r.json()
         else:
             raise PushError(r.text)
+
+    def push_sms(self, device, number, message):
+        data = {
+            "type": "push",
+            "push": {
+                "type": "messaging_extension_reply",
+                "package_name": "com.pushbullet.android",
+                "source_user_iden": self.user_info,
+                "target_device_iden": device.device_iden,
+                "conversation_iden": number,
+                "message": message
+            }
+        }
+
+        r = self._session.post(self.EPHEMERALS_URL, data=json.dumps(data))
+        if r.status_code == requests.codes.ok:
+            return r.json()
+        raise PushError(r.text)
 
     def refresh(self):
         self._load_devices()

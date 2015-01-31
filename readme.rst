@@ -273,6 +273,16 @@ Deleting contacts
     pb.remove_contact(bob)
 
 
+Sending SMS messages
+~~~~~~~~~~~~~~~~~~~~
+
+This is untested and uses an undocumented API. Use with caution.
+
+..code:: python
+
+    device = pb.devices[0]
+    push = pb.push_sms(device, "+3612345678", "Wowza!")
+
 Error checking
 ~~~~~~~~~~~~~~
 
