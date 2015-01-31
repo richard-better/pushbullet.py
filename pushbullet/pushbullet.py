@@ -259,9 +259,9 @@ class Pushbullet(object):
         }
 
         r = self._session.post(self.EPHEMERALS_URL, data=json.dumps(data))
-        if r.status_code != requests.codes.ok:
-            return False, r.json()
-        return True, r.json()
+        if r.status_code == requests.codes.ok:
+            return r.json()
+        raise PushError(r.text)
 
     def refresh(self):
         self._load_devices()
