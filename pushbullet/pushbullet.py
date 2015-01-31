@@ -170,7 +170,7 @@ class PushBullet(object):
         data = {"dismissed": True}
         r = self._session.post("{}/{}".format(self.PUSH_URL, iden), data=json.dumps(data))
 
-        if r.status_code =! requests.codes.ok:
+        if r.status_code != requests.codes.ok:
             raise PushBulletError(r.text)
 
     def delete_push(self, iden):
