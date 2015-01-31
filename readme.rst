@@ -1,4 +1,4 @@
-PushBullet.py
+pushbullet.py
 =============
 
 .. image:: https://img.shields.io/travis/randomchars/pushbullet.py.svg?style=flat-square
@@ -16,7 +16,7 @@ PushBullet.py
 .. image:: https://img.shields.io/pypi/l/pushbullet.py.svg
 
 This is a python library for the wonderful
-`PushBullet <https://www.pushbullet.com>`__ service. It allows you to
+`Pushbullet <https://www.pushbullet.com>`__ service. It allows you to
 send push notifications to
 `Android <https://play.google.com/store/apps/details?id=com.pushbullet.android>`__
 and `iOS <https://itunes.apple.com/us/app/pushbullet/id810352052>`__
@@ -55,9 +55,9 @@ Authentication
 
 .. code:: python
 
-    from pushbullet import PushBullet
+    from pushbullet import Pushbullet
 
-    pb = PushBullet(api_key)
+    pb = Pushbullet(api_key)
 
 If your key is invalid (that is, the Pushbullet API returns a ``401``), an ``InvalidKeyError`` is raised.
 
@@ -139,7 +139,7 @@ Pushes is a list containig dictionaries that have push data. You can use this da
     # Now delete it
     pb.delete_push(latest.get("iden"))
 
-Both of these raise ``PushBulletError`` if there's an error.
+Both of these raise ``PushbulletError`` if there's an error.
 
 Pushing to specific devices
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -199,12 +199,12 @@ Of course, you can also delete devices, even those not added by you.
 
     pb.remove_device(listener)
 
-A ``PushBulletError`` is raised on error.
+A ``PushbulletError`` is raised on error.
 
 Channels
 ~~~~~~~~~~~~
 
-You can also send pushes to channels. First, create a channel on the PushBullet
+You can also send pushes to channels. First, create a channel on the Pushbullet
 website (also make sure to subscribe to that channel). All channels which
 belong to the current user can be retrieved as follows:
 
@@ -277,8 +277,8 @@ Error checking
 ~~~~~~~~~~~~~~
 
 If the Pushbullet api returns an error code a ``PushError`` an __
-``InvalidKeyError`` or a ``PushBulletError`` is raised. The first __
-two are both subclasses of ``PushBulletError``
+``InvalidKeyError`` or a ``PushbulletError`` is raised. The first __
+two are both subclasses of ``PushbulletError``
 
 The `pushbullet api documetation <https://www.pushbullet.com/api>`__
 contains a list of possible status codes.

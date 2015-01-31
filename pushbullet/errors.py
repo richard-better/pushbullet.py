@@ -1,8 +1,8 @@
-class PushBulletError(Exception):
+class PushbulletError(Exception):
     pass
 
-class InvalidKeyError(PushBulletError):
+class InvalidKeyError(PushbulletError):
     pass
 
-class PushError(PushBulletError):
+class PushError(PushbulletError):
     pass
