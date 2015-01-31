@@ -135,7 +135,6 @@ class PushBullet(object):
         r = self._session.delete("{}/{}".format(self.DEVICES_URL, iden))
         if r.status_code == requests.codes.ok:
             self.devices.remove(device)
-            return True
         else:
             raise PushBulletError(r.text)
 
@@ -171,17 +170,13 @@ class PushBullet(object):
         data = {"dismissed": True}
         r = self._session.post("{}/{}".format(self.PUSH_URL, iden), data=json.dumps(data))
 
-        if r.status_code == requests.codes.ok:
-            return True
-        else:
+        if r.status_code =! requests.codes.ok:
             raise PushBulletError(r.text)
 
     def delete_push(self, iden):
         r = self._session.delete("{}/{}".format(self.PUSH_URL, iden))
 
-        if r.status_code == requests.codes.ok:
-            return True
-        else:
+        if r.status_code != requests.codes.ok:
             raise PushBulletError(r.text)
 
     def upload_file(self, f, file_name, file_type=None):
