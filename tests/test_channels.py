@@ -11,7 +11,7 @@ class TestChannels(object):
     @classmethod
     def setup_class(cls):
         cls.channel_tag = "test_tag"
-        channel_info = {'iden': "test_iden", 'name': 'test channel', 'created': time.time(), 'modified': time.time(), 'tag': cls.channel_tag, 'active': True} 
+        channel_info = {'iden': "test_iden", 'name': 'test channel', 'created': time.time(), 'modified': time.time(), 'tag': cls.channel_tag, 'active': True}
         cls.account = mock.Mock(return_value=True)
         cls.channel = channel.Channel(cls.account, channel_info)
 
@@ -22,7 +22,7 @@ class TestChannels(object):
 
     def test_repr(self):
         assert repr(self.channel) == "Channel(name: 'test channel' tag: '%s')" % self.channel_tag
-        
+
     def test_push_note(self):
         title = "test title"
         body = "test body"
@@ -65,5 +65,3 @@ class TestChannels(object):
         self.channel._push(data)
         pushed_data = {"title": "test title", "channel_tag": self.channel_tag}
         self.account._push.assert_called_with(pushed_data)
-
-

@@ -10,7 +10,7 @@ class TestContacts(object):
 
     @classmethod
     def setup_class(cls):
-        cls.pb = pushbullet.PushBullet(API_KEY)
+        cls.pb = pushbullet.Pushbullet(API_KEY)
 
     def test_encoding_support(self):
         for contact in self.pb.contacts:
