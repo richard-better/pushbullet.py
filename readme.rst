@@ -69,7 +69,7 @@ Pushing a text note
 
 .. code:: python
 
-    push = pb.push_note("This is the title", "This is the body".)
+    push = pb.push_note("This is the title", "This is the body")
 
 ``push`` is a dictionary containing the data returned by the Pushbullet API.
 
