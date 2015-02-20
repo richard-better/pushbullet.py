@@ -251,7 +251,7 @@ class Pushbullet(object):
             "push": {
                 "type": "messaging_extension_reply",
                 "package_name": "com.pushbullet.android",
-                "source_user_iden": self.user_info,
+                "source_user_iden": self.user_info['iden'],
                 "target_device_iden": device.device_iden,
                 "conversation_iden": number,
                 "message": message
