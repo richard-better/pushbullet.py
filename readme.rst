@@ -87,14 +87,14 @@ Pushing a list
 .. code:: python
 
     to_buy = ["milk", "bread", "cider"]
-    push = phone.push_list("Shopping list", to_buy)
+    push = pb.push_list("Shopping list", to_buy)
 
 Pushing a link
 ^^^^^^^^^^^^^^
 
 .. code:: python
 
-    push = phone.push_link("Cool site", "https://github.com")
+    push = pb.push_link("Cool site", "https://github.com")
 
 Pushing a file
 ^^^^^^^^^^^^^^
@@ -127,7 +127,7 @@ You can also view all previous pushes:
 
     pushes = pb.get_pushes()
 
-Pushes is a list containig dictionaries that have push data. You can use this data to dismiss notifications or delete pushes.
+Pushes is a list containing dictionaries that have push data. You can use this data to dismiss notifications or delete pushes.
 
 .. code:: python
 
