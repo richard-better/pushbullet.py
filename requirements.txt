@@ -1,3 +1,9 @@
-requests>=1.0.0
-python-magic
-websocket-client
+###
+# This file is only here to make sure that something like
+#
+#    pip install -e .
+#
+# works as expected. Requirements can be found in setup.py.
+###
+
+.
