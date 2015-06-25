@@ -165,7 +165,7 @@ class Pushbullet(object):
             else:
                 get_more_pushes = False
 
-        return True, pushes_list
+        return pushes_list
 
     def dismiss_push(self, iden):
         data = {"dismissed": True}
