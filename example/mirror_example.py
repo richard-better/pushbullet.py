@@ -7,12 +7,13 @@ import hashlib
 import base64
 import subprocess
 import os, sys
+import time
 
 from pushbullet import PushBullet, Listener
 
 class Mirrorer(object):
 
-    def __init__(self, auth_key, temp_folder, device_name, last_push = 0, device_iden=None):
+    def __init__(self, auth_key, temp_folder, device_name, last_push = time.time(), device_iden=None):
         self.temp_folder = temp_folder
         if not os.path.exists(self.temp_folder):
             os.makedirs(temp_folder)
