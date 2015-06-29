@@ -53,16 +53,15 @@ class Mirrorer(object):
             return path
 
     def check_pushes(self):
-        success, pushes = self.pb.get_pushes(self.last_push)
-        if success:
-            for push in pushes:
-                if not isinstance(push,dict): 
-                    # not a push object
-                    continue
-                if ((push.get("target_device_iden", self.device.device_iden) == self.device.device_iden) and not (push.get("dismissed", True))):
-                    self.notify(push.get("title", ""), push.get("body", ""))
-                    self.pb.dismiss_push(push.get("iden"))
-                self.last_push = max(self.last_push, push.get("created"))
+        pushes = self.pb.get_pushes(self.last_push)
+        for push in pushes:
+            if not isinstance(push,dict): 
+                # not a push object
+                continue
+            if ((push.get("target_device_iden", self.device.device_iden) == self.device.device_iden) and not (push.get("dismissed", True))):
+                self.notify(push.get("title", ""), push.get("body", ""))
+                self.pb.dismiss_push(push.get("iden"))
+            self.last_push = max(self.last_push, push.get("created"))
 
     def watcher(self, push):
         if push["type"] == "push" and push["push"]["type"] == "mirror":
