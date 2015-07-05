@@ -1,5 +1,5 @@
 {
 	"temp_folder": "./tempdir",
-	"auth_key": "YOURKEYHERE"
+	"auth_key": "YOURKEYHERE",
 	"device_name": "Ubuntu"
 }
