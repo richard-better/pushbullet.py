@@ -180,6 +180,12 @@ class Pushbullet(object):
         if r.status_code != requests.codes.ok:
             raise PushbulletError(r.text)
 
+    def delete_pushes(self):
+        r = self._session.delete(self.PUSH_URL)
+
+        if r.status_code != requests.codes.ok:
+            raise PushbulletError(r.text)
+
     def upload_file(self, f, file_name, file_type=None):
         if not file_type:
             file_type = get_file_type(f, file_name)

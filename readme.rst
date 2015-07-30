@@ -141,6 +141,12 @@ Pushes is a list containing dictionaries that have push data. You can use this d
 
 Both of these raise ``PushbulletError`` if there's an error.
 
+You can also delete all of your pushes:
+
+.. code:: python
+
+    pushes = pb.delete_pushes()
+
 Pushing to specific devices
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
