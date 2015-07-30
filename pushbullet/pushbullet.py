@@ -149,8 +149,10 @@ class Pushbullet(object):
         else:
             raise PushbulletError(r.text)
 
-    def get_pushes(self, modified_after=None, limit=None):
+    def get_pushes(self, modified_after=None, limit=None, filter_inactive=True):
         data = {"modified_after": modified_after, "limit": limit}
+        if filter_inactive:
+            data['active'] = "true"
 
         pushes_list = []
         get_more_pushes = True
