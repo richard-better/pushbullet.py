@@ -282,9 +282,7 @@ Deleting contacts
 Sending SMS messages
 ~~~~~~~~~~~~~~~~~~~~
 
-This is untested and uses an undocumented API. Use with caution.
-
-..code:: python
+.. code:: python
 
     device = pb.devices[0]
     push = pb.push_sms(device, "+3612345678", "Wowza!")
