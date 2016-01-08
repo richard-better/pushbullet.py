@@ -108,7 +108,7 @@ class Pushbullet(object):
             raise PushbulletError(r.text)
 
     def edit_device(self, device, nickname=None, model=None, manufacturer=None):
-        data = {"nickname": nickname}
+        data = {"nickname": nickname or device.nickname}
         iden = device.device_iden
         r = self._session.post("{}/{}".format(self.DEVICES_URL, iden), data=json.dumps(data))
         if r.status_code == requests.codes.ok:
