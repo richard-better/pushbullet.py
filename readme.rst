@@ -192,7 +192,7 @@ You can change the nickname, the manufacturer and the model of the device:
 
 .. code:: python
 
-    listener = pb.edit_device(listener, make="Python", model="3.4.1")
+    listener = pb.edit_device(listener, manufacturer="Python", model="3.4.1")
     motog = pb.edit_device(motog, nickname="My MotoG")
 
 
