@@ -160,7 +160,11 @@ First we need to get hold of some devices.
     print(pb.devices)
     # [Device('Motorola Moto G'), Device('N7'), Device('Chrome')]
 
+    # Select a device from the array using indexing
     motog = pb.devices[0]
+
+    # Or retrieve a device by its name. Note that an InvalidKeyError is raised if the name does not exist
+    motog = pb.get_device('Motorola Moto G')
 
 Now we can use the device objects like we did with `pb`:
 
