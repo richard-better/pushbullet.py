@@ -3,7 +3,7 @@ import requests
 
 from .device import Device
 from .channel import Channel
-from .contact import Contact
+from .chat import Chat
 from .errors import PushbulletError, InvalidKeyError, PushError
 from .filetype import get_file_type
 
@@ -11,7 +11,7 @@ from .filetype import get_file_type
 class Pushbullet(object):
 
     DEVICES_URL = "https://api.pushbullet.com/v2/devices"
-    CONTACTS_URL = "https://api.pushbullet.com/v2/contacts"
+    CHATS_URL = "https://api.pushbullet.com/v2/chats"
     CHANNELS_URL = "https://api.pushbullet.com/v2/channels"
     ME_URL = "https://api.pushbullet.com/v2/users/me"
     PUSH_URL = "https://api.pushbullet.com/v2/pushes"
@@ -47,16 +47,16 @@ class Pushbullet(object):
                 d = Device(self, device_info)
                 self.devices.append(d)
 
-    def _load_contacts(self):
-        self.contacts = []
+    def _load_chats(self):
+        self.chats = []
 
-        resp_dict = self._get_data(self.CONTACTS_URL)
-        contacts_list = resp_dict.get("contacts", [])
+        resp_dict = self._get_data(self.CHATS_URL)
+        chat_list = resp_dict.get("chats", [])
 
-        for contact_info in contacts_list:
-            if contact_info.get("active"):
-                c = Contact(self, contact_info)
-                self.contacts.append(c)
+        for chat_info in chat_list:
+            if chat_info.get("active"):
+                c = Chat(self, chat_info)
+                self.chats.append(c)
 
     def _load_user_info(self):
         self.user_info = self._get_data(self.ME_URL)
@@ -73,13 +73,13 @@ class Pushbullet(object):
                 self.channels.append(c)
 
     @staticmethod
-    def _recipient(device=None, contact=None, email=None, channel=None):
+    def _recipient(device=None, chat=None, email=None, channel=None):
         data = dict()
 
         if device:
             data["device_iden"] = device.device_iden
-        elif contact:
-            data["email"] = contact.email
+        elif chat:
+            data["email"] = chat.email
         elif email:
             data["email"] = email
         elif channel:
@@ -97,13 +97,13 @@ class Pushbullet(object):
         else:
             raise PushbulletError(r.text)
 
-    def new_contact(self, name, email):
+    def new_chat(self, name, email):
         data = {"name": name, "email": email}
-        r = self._session.post(self.CONTACTS_URL, data=json.dumps(data))
+        r = self._session.post(self.CHATS_URL, data=json.dumps(data))
         if r.status_code == requests.codes.ok:
-            new_contact = Contact(self, r.json())
-            self.contacts.append(new_contact)
-            return new_contact
+            new_chat = Chat(self, r.json())
+            self.chats.append(new_chat)
+            return new_chat
         else:
             raise PushbulletError(r.text)
 
@@ -120,14 +120,14 @@ class Pushbullet(object):
             raise PushbulletError(r.text)
 
 
-    def edit_contact(self, contact, name):
+    def edit_chat(self, chat, name):
         data = {"name": name}
-        iden = contact.iden
-        r = self._session.post("{}/{}".format(self.CONTACTS_URL, iden), data=json.dumps(data))
+        iden = chat.iden
+        r = self._session.post("{}/{}".format(self.CHATS_URL, iden), data=json.dumps(data))
         if r.status_code == requests.codes.ok:
-            new_contact = Contact(self, r.json())
-            self.contacts[self.contacts.index(contact)] = new_contact
-            return new_contact
+            new_chat = Chat(self, r.json())
+            self.chats[self.chats.index(chat)] = new_chat
+            return new_chat
         else:
             raise PushbulletError(r.text)
 
@@ -141,11 +141,11 @@ class Pushbullet(object):
             raise PushbulletError(r.text)
 
 
-    def remove_contact(self, contact):
-        iden = contact.iden
-        r = self._session.delete("{}/{}".format(self.CONTACTS_URL, iden))
+    def remove_chat(self, chat):
+        iden = chat.iden
+        r = self._session.delete("{}/{}".format(self.CHATS_URL, iden))
         if r.status_code == requests.codes.ok:
-            self.contacts.remove(contact)
+            self.chats.remove(chat)
             return True
         else:
             raise PushbulletError(r.text)
@@ -217,7 +217,7 @@ class Pushbullet(object):
 
         return {"file_type": file_type, "file_url": file_url, "file_name": file_name}
 
-    def push_file(self, file_name, file_url, file_type, body=None, device=None, contact=None, email=None, channel=None, title=None):
+    def push_file(self, file_name, file_url, file_type, body=None, device=None, chat=None, email=None, channel=None, title=None):
         data = {"type": "file", "file_type": file_type, "file_url": file_url, "file_name": file_name}
         if body:
             data["body"] = body
@@ -225,35 +225,35 @@ class Pushbullet(object):
         if title:
             data["title"] = title
 
-        data.update(Pushbullet._recipient(device, contact, email, channel))
+        data.update(Pushbullet._recipient(device, chat, email, channel))
 
         return self._push(data)
 
-    def push_note(self, title, body, device=None, contact=None, email=None):
+    def push_note(self, title, body, device=None, chat=None, email=None):
         data = {"type": "note", "title": title, "body": body}
 
-        data.update(Pushbullet._recipient(device, contact, email))
+        data.update(Pushbullet._recipient(device, chat, email))
 
         return self._push(data)
 
-    def push_address(self, name, address, device=None, contact=None, email=None):
+    def push_address(self, name, address, device=None, chat=None, email=None):
         data = {"type": "address", "name": name, "address": address}
 
-        data.update(Pushbullet._recipient(device, contact, email))
+        data.update(Pushbullet._recipient(device, chat, email))
 
         return self._push(data)
 
-    def push_list(self, title, items, device=None, contact=None, email=None):
+    def push_list(self, title, items, device=None, chat=None, email=None):
         data = {"type": "list", "title": title, "items": items}
 
-        data.update(Pushbullet._recipient(device, contact, email))
+        data.update(Pushbullet._recipient(device, chat, email))
 
         return self._push(data)
 
-    def push_link(self, title, url, body=None, device=None, contact=None, email=None):
+    def push_link(self, title, url, body=None, device=None, chat=None, email=None):
         data = {"type": "link", "title": title, "url": url, "body": body}
 
-        data.update(Pushbullet._recipient(device, contact, email))
+        data.update(Pushbullet._recipient(device, chat, email))
 
         return self._push(data)
 
@@ -285,6 +285,6 @@ class Pushbullet(object):
 
     def refresh(self):
         self._load_devices()
-        self._load_contacts()
+        self._load_chats()
         self._load_user_info()
         self._load_channels()

@@ -239,48 +239,48 @@ user.
 Contacts
 ~~~~~~~~~~~~
 
-Contacts work just like devices:
+Contacts, which are known as "Chats" in Pushbullet's terminilogy, work just like devices:
 
 .. code:: python
 
     # Get all contacts the user has
-    print(pb.contacts)
-    # [Contact('Peter' <peter@gmail.com>), Contact('Sophie' <sophie@gmail.com>]
+    print(pb.chats)
+    # [Chat('Peter' <peter@gmail.com>), Chat('Sophie' <sophie@gmail.com>]
 
-    sophie = pb.contacts[1]
+    sophie = pb.chats[1]
 
-Now we can use the contact objects like we did with `pb` or with the devices.:
+Now we can use the chat objects like we did with `pb` or with the devices.:
 
 .. code:: python
 
     push = sophie.push_note("Hello world!", "We're using the api.")
 
     # Or:
-    push = pb.push_note("Hello world!", "We're using the api.", contact=sophie)
+    push = pb.push_note("Hello world!", "We're using the api.", chat=sophie)
 
 
-Adding new contacts
+Adding new chats
 ^^^^^^^^^^^^^^^^^^^^
 
 .. code:: python
 
-    bob = pb.new_contact("Bob", "bob@gmail.com")
+    bob = pb.new_chat("Bob", "bob@gmail.com")
 
-Editing contacts
+Editing chats
 ^^^^^^^^^^^^^^^^^
 
-You can change the name of any contact:
+You can change the name of any chat:
 
 .. code:: python
 
-    bob = pb.edit_contact(bob, "bobby")
+    bob = pb.edit_chat(bob, "bobby")
 
-Deleting contacts
+Deleting chats
 ^^^^^^^^^^^^^^^^^^^
 
 .. code:: python
 
-    pb.remove_contact(bob)
+    pb.remove_chat(bob)
 
 
 Sending SMS messages
