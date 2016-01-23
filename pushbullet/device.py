@@ -39,7 +39,7 @@ class Device(object):
 
     @use_appropriate_encoding
     def __str__(self):
-        return "Device('{0}')".format(self.nickname or ("{0} {1}".format(self.manufacturer or self.model)))
+        return "Device('{0}')".format(self.nickname or "nameless (iden: {})".format(self.device_iden))
 
     def __repr__(self):
         return self.__str__()
