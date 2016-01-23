@@ -153,12 +153,12 @@ class Pushbullet(object):
 
     def get_device(self, nickname):
         req_device = next((device for device in self.devices if device.nickname == nickname), None)
-        
+
         if req_device is None:
             raise InvalidKeyError()
-        
+
         return req_device
-    
+
     def get_pushes(self, modified_after=None, limit=None, filter_inactive=True):
         data = {"modified_after": modified_after, "limit": limit}
         if filter_inactive:
