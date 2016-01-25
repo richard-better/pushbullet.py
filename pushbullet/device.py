@@ -9,9 +9,9 @@ class Device(object):
         self._account = account
         self.device_iden = device_info.get("iden")
 
-        for attr in ("push_token", "app_version", "android_sdk_version", "fingerprint",
-                     "active", "nickname", "manufacturer", "type", "created", "modified",
-                     "android_version", "model", "pushable"):
+        for attr in ("push_token", "app_version", "fingerprint", "created", "modified",
+                    "active", "nickname", "generated_nickname", "manufacturer", "icon",
+                    "model", "has_sms", "key_fingerprint"):
             setattr(self, attr, device_info.get(attr))
 
     def push_note(self, title, body):

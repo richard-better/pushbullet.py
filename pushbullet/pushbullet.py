@@ -87,8 +87,10 @@ class Pushbullet(object):
 
         return data
 
-    def new_device(self, nickname):
-        data = {"nickname": nickname, "type": "stream"}
+    def new_device(self, nickname, manufacturer=None, model=None, icon="system"):
+        data = {"nickname": nickname, "icon": icon}
+        data.update({k: v for k, v in
+            (("model", model), ("manufacturer", manufacturer)) if v is not None})
         r = self._session.post(self.DEVICES_URL, data=json.dumps(data))
         if r.status_code == requests.codes.ok:
             new_device = Device(self, r.json())
