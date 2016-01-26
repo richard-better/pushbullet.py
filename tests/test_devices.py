@@ -11,7 +11,8 @@ class TestDevices(object):
     def setup_class(cls):
         cls.device_iden = "test_iden"
         device_info = {"active": True, "iden": cls.device_iden, "created": time.time(), "modified": time.time(),
-                       "type": "stream", "kind": "stream", "nickname": "test dev", "manufacturer": "test c", "model": "test m", "pushable": True}
+                       "icon": "system", "generated_nickname": False, "nickname": "test dev", "manufacturer": "test c",
+                       "model": "test m", "has_sms": False}
         cls.account = mock.Mock(return_value=True)
         cls.device = device.Device(cls.account, device_info)
 
