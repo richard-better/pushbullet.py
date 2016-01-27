@@ -182,21 +182,24 @@ Creating new devices
 ^^^^^^^^^^^^^^^^^^^^
 
 Creating a new device is easy too, you only need to specify a name for it.
+Though you can also specify manufacturer, model and icon too.
 
 .. code:: python
 
     listener = pb.new_device("Listener")
+    motog = pb.new_device("MotoG", manufacturer="Motorola", model="G", icon="android")
+
 
 Now you can use it like any other device.
 
 Editing devices
 ^^^^^^^^^^^^^^^
 
-You can change the nickname, the manufacturer and the model of the device:
+You can change the nickname, the manufacturer, model and icon of the device:
 
 .. code:: python
 
-    listener = pb.edit_device(listener, manufacturer="Python", model="3.4.1")
+    listener = pb.edit_device(listener, manufacturer="Python", model="3.4.1", icon="system")
     motog = pb.edit_device(motog, nickname="My MotoG")
 
 
