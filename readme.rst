@@ -248,7 +248,7 @@ Contacts, which are known as "Chats" in Pushbullet's terminilogy, work just like
 
     # Get all contacts the user has
     print(pb.chats)
-    # [Chat('Peter' <peter@gmail.com>), Chat('Sophie' <sophie@gmail.com>]
+    # [Chat('Peter' <peter@gmail.com>), Chat('Sophie' <sophie@gmail.com>)]
 
     sophie = pb.chats[1]
 
