@@ -161,6 +161,14 @@ class Pushbullet(object):
 
         return req_device
 
+    def get_channel(self, channel_tag):
+        req_channel = next((channel for channel in self.channels if channel.channel_tag == channel_tag), None)
+
+        if req_channel is None:
+            raise InvalidKeyError()
+
+        return req_channel
+
     def get_pushes(self, modified_after=None, limit=None, filter_inactive=True):
         data = {"modified_after": modified_after, "limit": limit}
         if filter_inactive:
@@ -232,10 +240,10 @@ class Pushbullet(object):
 
         return self._push(data)
 
-    def push_note(self, title, body, device=None, chat=None, email=None):
+    def push_note(self, title, body, device=None, chat=None, email=None, channel=None):
         data = {"type": "note", "title": title, "body": body}
 
-        data.update(Pushbullet._recipient(device, chat, email))
+        data.update(Pushbullet._recipient(device, chat, email, channel))
 
         return self._push(data)
 
@@ -253,10 +261,10 @@ class Pushbullet(object):
 
         return self._push(data)
 
-    def push_link(self, title, url, body=None, device=None, chat=None, email=None):
+    def push_link(self, title, url, body=None, device=None, chat=None, email=None, channel=None):
         data = {"type": "link", "title": title, "url": url, "body": body}
 
-        data.update(Pushbullet._recipient(device, chat, email))
+        data.update(Pushbullet._recipient(device, chat, email, channel))
 
         return self._push(data)
 
