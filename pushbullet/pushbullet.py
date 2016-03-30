@@ -157,7 +157,7 @@ class Pushbullet(object):
         req_device = next((device for device in self.devices if device.nickname == nickname), None)
 
         if req_device is None:
-            raise InvalidKeyError()
+            raise PushbulletError('No device found with nickname "{}"'.format(nickname))
 
         return req_device
 
@@ -165,7 +165,7 @@ class Pushbullet(object):
         req_channel = next((channel for channel in self.channels if channel.channel_tag == channel_tag), None)
 
         if req_channel is None:
-            raise InvalidKeyError()
+            raise PushbulletError('No channel found with channel_tag "{}"'.format(channel_tag))
 
         return req_channel
 
