@@ -1,5 +1,4 @@
 from __future__ import print_function
-import sys
 
 from pushbullet import filetype
 
@@ -10,9 +9,6 @@ class TestFiletypes(object):
         filename = 'tests/test.png'
         with open(filename, "rb") as pic:
             output = filetype._magic_get_file_type(pic, filename)
-        if sys.version_info >= (3, 0):
-            assert output == (b'image/png')
-        else:
             assert output == ('image/png')
 
     def test_guess_file_type(self):
