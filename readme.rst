@@ -229,11 +229,20 @@ belong to the current user can be retrieved as follows:
 
     my_channel = pb.channels[0]
 
+    # Or retrieve a channel by its channel_tag. Note that an InvalidKeyError is raised if the channel_tag does not exist
+    my_channel = pb.get_channel('My Channel')
+
 Then you can send a push to all subscribers of this channel like so:
 
 .. code:: python
 
     push = my_channel.push_note("Hello Channel!", "Hello My Channel")
+
+Alternatively we can pass the channel to push methods:
+
+.. code:: python
+
+    push = pb.push_note("Hello Channel!", "Hello My Channel.", channel=my_channel)
 
 Note that you can only push to channels which have been created by the current
 user.
