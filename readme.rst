@@ -303,6 +303,21 @@ Sending SMS messages
     device = pb.devices[0]
     push = pb.push_sms(device, "+3612345678", "Wowza!")
 
+End-To-End encryption
+^^^^^^^^^^^^^^^^^^^^^
+
+You activate end-to-end encryption by specifying your encryption key during the construction of the ``Pushbullet`` instance:
+
+.. code:: python
+
+    from pushbullet import Pushbullet
+
+    pb = Pushbullet(api_key, "My secret password")
+
+When specified, all sent SMS will be encrypted. Note that the use of end-to-end encryption requires the ``cryptography`` package. Since end-to-end encryption is only supported for SMS at the moment, the ``cryptography`` library is not specified as a dependency of ``pushbullet.py`` and should be installed seperatly by running ``pip install cryptography``.
+
+Note that Pushbullet supportes End-To-End encryption only in SMS, notification mirroring and universal copy & paste. Your pushes will not be end-to-end encrypted.
+
 Error checking
 ~~~~~~~~~~~~~~
 
