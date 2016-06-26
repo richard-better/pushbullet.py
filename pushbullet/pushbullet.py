@@ -161,8 +161,8 @@ class Pushbullet(object):
             raise PushbulletError(r.text)
 
 
-    def mute_chat(self, chat):
-        data = {"muted":  True}
+   def mute_chat(self, chat):
+        data = {"muted": True}
         iden = chat.iden
         r = self._session.post("{}/{}".format(self.CHATS_URL, iden), data=json.dumps(data))
         if r.status_code == requests.codes.ok:
@@ -171,10 +171,10 @@ class Pushbullet(object):
             return new_chat
         else:
             raise PushbulletError(r.text)
-            
-            
+
+
     def unmute_chat(self, chat):
-         data = {"muted":  False}
+        data = {"muted": False}
         iden = chat.iden
         r = self._session.post("{}/{}".format(self.CHATS_URL, iden), data=json.dumps(data))
         if r.status_code == requests.codes.ok:
