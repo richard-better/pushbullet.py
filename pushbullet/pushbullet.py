@@ -148,7 +148,6 @@ class Pushbullet(object):
         else:
             raise PushbulletError(r.text)
 
-
     def edit_chat(self, chat, name):
         data = {"name": name}
         iden = chat.iden
@@ -160,7 +159,6 @@ class Pushbullet(object):
         else:
             raise PushbulletError(r.text)
 
-
    def mute_chat(self, chat):
         data = {"muted": True}
         iden = chat.iden
@@ -171,7 +169,6 @@ class Pushbullet(object):
             return new_chat
         else:
             raise PushbulletError(r.text)
-
 
     def unmute_chat(self, chat):
         data = {"muted": False}
