@@ -1,3 +1,4 @@
+import os
 import json
 import requests
 
@@ -6,6 +7,13 @@ from .channel import Channel
 from .chat import Chat
 from .errors import PushbulletError, InvalidKeyError, PushError
 from .filetype import get_file_type
+from ._compat import standard_b64encode
+
+
+class NoEncryptionModuleError(Exception):
+    def __init__(self, msg):
+        super(NoEncryptionModuleError, self).__init__(
+            "cryptography is required for end-to-end encryption support and could not be imported: " + msg + "\nYou can install it by running 'pip install cryptography'")
 
 
 class Pushbullet(object):
@@ -18,7 +26,7 @@ class Pushbullet(object):
     UPLOAD_REQUEST_URL = "https://api.pushbullet.com/v2/upload-request"
     EPHEMERALS_URL = "https://api.pushbullet.com/v2/ephemerals"
 
-    def __init__(self, api_key):
+    def __init__(self, api_key, encryption_password=None):
         self.api_key = api_key
         self._json_header = {'Content-Type': 'application/json'}
 
@@ -27,6 +35,24 @@ class Pushbullet(object):
         self._session.headers.update(self._json_header)
 
         self.refresh()
+
+        self._encryption_key = None
+        if encryption_password:
+            try:
+                from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+                from cryptography.hazmat.backends import default_backend
+                from cryptography.hazmat.primitives import hashes
+            except ImportError as e:
+                raise NoEncryptionModuleError(str(e))
+
+            kdf = PBKDF2HMAC(
+                algorithm=hashes.SHA256(),
+                length=32,
+                salt=self.user_info["iden"].encode("ASCII"),
+                iterations=30000,
+                backend=default_backend()
+            )
+            self._encryption_key = kdf.derive(encryption_password.encode("UTF-8"))
 
     def _get_data(self, url):
         resp = self._session.get(url)
@@ -87,8 +113,10 @@ class Pushbullet(object):
 
         return data
 
-    def new_device(self, nickname):
-        data = {"nickname": nickname, "type": "stream"}
+    def new_device(self, nickname, manufacturer=None, model=None, icon="system"):
+        data = {"nickname": nickname, "icon": icon}
+        data.update({k: v for k, v in
+            (("model", model), ("manufacturer", manufacturer)) if v is not None})
         r = self._session.post(self.DEVICES_URL, data=json.dumps(data))
         if r.status_code == requests.codes.ok:
             new_device = Device(self, r.json())
@@ -107,10 +135,10 @@ class Pushbullet(object):
         else:
             raise PushbulletError(r.text)
 
-    def edit_device(self, device, nickname=None, model=None, manufacturer=None):
+    def edit_device(self, device, nickname=None, model=None, manufacturer=None, icon=None):
         data = {k: v for k, v in
                 (("nickname", nickname or device.nickname), ("model", model),
-                 ("manufacturer", manufacturer)) if v is not None}
+                 ("manufacturer", manufacturer), ("icon", icon)) if v is not None}
         iden = device.device_iden
         r = self._session.post("{}/{}".format(self.DEVICES_URL, iden), data=json.dumps(data))
         if r.status_code == requests.codes.ok:
@@ -132,6 +160,7 @@ class Pushbullet(object):
         else:
             raise PushbulletError(r.text)
 
+
     def mute_chat(self, chat):
         data = {"muted":  True}
         iden = chat.iden
@@ -142,7 +171,8 @@ class Pushbullet(object):
             return new_chat
         else:
             raise PushbulletError(r.text)
-
+            
+            
     def unmute_chat(self, chat):
          data = {"muted":  False}
         iden = chat.iden
@@ -153,7 +183,8 @@ class Pushbullet(object):
             return new_chat
         else:
             raise PushbulletError(r.text)
-
+            
+            
     def remove_device(self, device):
         iden = device.device_iden
         r = self._session.delete("{}/{}".format(self.DEVICES_URL, iden))
@@ -176,9 +207,17 @@ class Pushbullet(object):
         req_device = next((device for device in self.devices if device.nickname == nickname), None)
 
         if req_device is None:
-            raise InvalidKeyError()
+            raise PushbulletError('No device found with nickname "{}"'.format(nickname))
 
         return req_device
+
+    def get_channel(self, channel_tag):
+        req_channel = next((channel for channel in self.channels if channel.channel_tag == channel_tag), None)
+
+        if req_channel is None:
+            raise PushbulletError('No channel found with channel_tag "{}"'.format(channel_tag))
+
+        return req_channel
 
     def get_pushes(self, modified_after=None, limit=None, filter_inactive=True):
         data = {"modified_after": modified_after, "limit": limit}
@@ -251,10 +290,10 @@ class Pushbullet(object):
 
         return self._push(data)
 
-    def push_note(self, title, body, device=None, chat=None, email=None):
+    def push_note(self, title, body, device=None, chat=None, email=None, channel=None):
         data = {"type": "note", "title": title, "body": body}
 
-        data.update(Pushbullet._recipient(device, chat, email))
+        data.update(Pushbullet._recipient(device, chat, email, channel))
 
         return self._push(data)
 
@@ -272,10 +311,10 @@ class Pushbullet(object):
 
         return self._push(data)
 
-    def push_link(self, title, url, body=None, device=None, chat=None, email=None):
+    def push_link(self, title, url, body=None, device=None, chat=None, email=None, channel=None):
         data = {"type": "link", "title": title, "url": url, "body": body}
 
-        data.update(Pushbullet._recipient(device, chat, email))
+        data.update(Pushbullet._recipient(device, chat, email, channel))
 
         return self._push(data)
 
@@ -300,10 +339,33 @@ class Pushbullet(object):
             }
         }
 
+        if self._encryption_key:
+            data["push"] = {
+                "ciphertext": self._encrypt_data(data["push"]),
+                "encrypted": True
+            }
+
         r = self._session.post(self.EPHEMERALS_URL, data=json.dumps(data))
         if r.status_code == requests.codes.ok:
             return r.json()
         raise PushError(r.text)
+
+    def _encrypt_data(self, data):
+        assert self._encryption_key
+
+        from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+        from cryptography.hazmat.backends import default_backend
+
+        iv = os.urandom(12)
+        encryptor = Cipher(
+            algorithms.AES(self._encryption_key),
+            modes.GCM(iv),
+            backend=default_backend()
+        ).encryptor()
+
+        ciphertext = encryptor.update(json.dumps(data).encode("UTF-8")) + encryptor.finalize()
+        ciphertext = b"1" + encryptor.tag + iv + ciphertext
+        return standard_b64encode(ciphertext).decode("ASCII")
 
     def refresh(self):
         self._load_devices()
