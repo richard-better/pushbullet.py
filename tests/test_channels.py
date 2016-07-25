@@ -41,7 +41,7 @@ class TestChannels(object):
         title = "test title"
         items = ["test item 1", "test item 2"]
         self.channel.push_list(title, items)
-        pushed_data = {"type": notee", "title": title, "body": ",".join(items), "channel_tag": self.channel_tag}
+        pushed_data = {"type": "note", "title": title, "body": ",".join(items), "channel_tag": self.channel_tag}
         self.account._push.assert_called_with(pushed_data)
 
     def test_push_link(self):
