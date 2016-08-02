@@ -57,8 +57,9 @@ class TestChannels(object):
         file_url = "http://file.url"
         file_type = "test/type"
         body = "test body"
-        self.channel.push_file(file_name, file_url, file_type, body)
-        self.account.push_file.assert_called_with(file_name, file_url, file_type, body, channel=self.channel)
+        title = "test title"
+        self.channel.push_file(file_name, file_url, file_type, body=body, title=title)
+        self.account.push_file.assert_called_with(file_name, file_url, file_type, body=body, title=title, channel=self.channel)
 
     def test_push(self):
         data = {"title": "test title"}
