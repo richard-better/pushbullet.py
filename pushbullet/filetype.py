@@ -12,9 +12,9 @@ def _guess_file_type(_, filename):
 # decode because that results in unicode on python2
 def maybe_decode(s):
     if str == bytes:
-        return s
-    else:
         return s.decode('utf-8')
+    else:
+        return s
 
 
 try:
