@@ -1,6 +1,7 @@
 import os
 import json
 import requests
+import warnings
 
 from .device import Device
 from .channel import Channel
@@ -274,18 +275,12 @@ class Pushbullet(object):
         return self._push(data)
 
     def push_address(self, name, address, device=None, chat=None, email=None):
-        data = {"type": "address", "name": name, "address": address}
-
-        data.update(Pushbullet._recipient(device, chat, email))
-
-        return self._push(data)
+        warnings.warn("Address push type is removed. This push will be sent as note.")
+        return self.push_note(name, address, device, chat, email)
 
     def push_list(self, title, items, device=None, chat=None, email=None):
-        data = {"type": "list", "title": title, "items": items}
-
-        data.update(Pushbullet._recipient(device, chat, email))
-
-        return self._push(data)
+        warnings.warn("List push type is removed. This push will be sent as note.")
+        return self.push_note(title, ",".join(items), device, chat, email)
 
     def push_link(self, title, url, body=None, device=None, chat=None, email=None, channel=None):
         data = {"type": "link", "title": title, "url": url, "body": body}

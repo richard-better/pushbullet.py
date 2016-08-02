@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
 
+import warnings
+
 from .helpers import use_appropriate_encoding
 
 
@@ -17,12 +19,12 @@ class Channel(object):
         return self._push(data)
 
     def push_address(self, name, address):
-        data = {"type": "address", "name": name, "address": address}
-        return self._push(data)
+        warnings.warn("Address push type is removed. This push will be sent as note.")
+        return self.push_note(name, address)
 
     def push_list(self, title, items):
-        data = {"type": "list", "title": title, "items": items}
-        return self._push(data)
+        warnings.warn("List push type is removed. This push will be sent as note.")
+        return self.push_note(title, ",".join(items))
 
     def push_link(self, title, url, body=None):
         data = {"type": "link", "title": title, "url": url, "body": body}

@@ -35,14 +35,14 @@ class TestDevices(object):
         name = "test name"
         address = "test address"
         self.device.push_address(name, address)
-        pushed_data = {"type": "address", "name": name, "address": address, "device_iden": self.device_iden}
+        pushed_data = {"type": "note", "title": name, "body": address, "device_iden": self.device_iden}
         self.account._push.assert_called_with(pushed_data)
 
     def test_push_list(self):
         title = "test title"
         items = ["test item 1", "test item 2"]
         self.device.push_list(title, items)
-        pushed_data = {"type": "list", "title": title, "items": items, "device_iden": self.device_iden}
+        pushed_data = {"type": "note", "title": title, "body": ",".join(items), "device_iden": self.device_iden}
         self.account._push.assert_called_with(pushed_data)
 
     def test_push_link(self):

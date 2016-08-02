@@ -34,14 +34,14 @@ class TestChannels(object):
         name = "test name"
         address = "test address"
         self.channel.push_address(name, address)
-        pushed_data = {"type": "address", "name": name, "address": address, "channel_tag": self.channel_tag}
+        pushed_data = {"type": "note", "title": name, "body": address, "channel_tag": self.channel_tag}
         self.account._push.assert_called_with(pushed_data)
 
     def test_push_list(self):
         title = "test title"
         items = ["test item 1", "test item 2"]
         self.channel.push_list(title, items)
-        pushed_data = {"type": "list", "title": title, "items": items, "channel_tag": self.channel_tag}
+        pushed_data = {"type": "note", "title": title, "body": ",".join(items), "channel_tag": self.channel_tag}
         self.account._push.assert_called_with(pushed_data)
 
     def test_push_link(self):
