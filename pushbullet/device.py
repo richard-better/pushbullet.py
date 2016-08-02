@@ -32,8 +32,8 @@ class Device(object):
         data = {"type": "link", "title": title, "url": url, "body": body}
         return self._push(data)
 
-    def push_file(self, file_name, file_url, file_type, body=None):
-        return self._account.push_file(file_name, file_url, file_type, body, device=self)
+    def push_file(self, file_name, file_url, file_type, body=None, title=None):
+        return self._account.push_file(file_name, file_url, file_type, body=body, title=title, device=self)
 
     def _push(self, data):
         data["device_iden"] = self.device_iden

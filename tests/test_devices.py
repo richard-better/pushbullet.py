@@ -58,8 +58,9 @@ class TestDevices(object):
         file_url = "http://file.url"
         file_type = "test/type"
         body = "test body"
-        self.device.push_file(file_name, file_url, file_type, body)
-        self.account.push_file.assert_called_with(file_name, file_url, file_type, body, device=self.device)
+        title = "test title"
+        self.device.push_file(file_name, file_url, file_type, body=body, title=title)
+        self.account.push_file.assert_called_with(file_name, file_url, file_type, title=title, body=body, device=self.device)
 
     def test_push(self):
         data = {"title": "test title"}
