@@ -57,8 +57,12 @@ class Pushbullet(object):
     def _get_data(self, url):
         resp = self._session.get(url)
 
-        if resp.status_code != requests.codes.ok:
+        if resp.status_code in (401, 403):
             raise InvalidKeyError()
+        elif resp.status_code == 419:
+            raise PushbulletError("Too Many Requests, you have been ratelimited")
+        elif resp.status_code != requests.codes.ok:
+            raise PushbulletError(resp.status_code)
 
         return resp.json()
 
