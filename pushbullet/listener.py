@@ -17,6 +17,7 @@ WEBSOCKET_URL = 'wss://stream.pushbullet.com/websocket/'
 class Listener(Thread, websocket.WebSocketApp):
     def __init__(self, account,
                  on_push=None,
+                 on_error=None,
                  http_proxy_host=None,
                  http_proxy_port=None):
         """
@@ -27,10 +28,12 @@ class Listener(Thread, websocket.WebSocketApp):
         """
         self._account = account
         self._api_key = self._account.api_key
+        self.on_error = on_error
 
         Thread.__init__(self)
         websocket.WebSocketApp.__init__(self, WEBSOCKET_URL + self._api_key,
                                         on_open=self.on_open,
+                                        on_error=self.on_error,
                                         on_message=self.on_message,
                                         on_close=self.on_close)
 
