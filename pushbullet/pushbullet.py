@@ -342,6 +342,34 @@ class Pushbullet(object):
         ciphertext = b"1" + encryptor.tag + iv + ciphertext
         return standard_b64encode(ciphertext).decode("ASCII")
 
+    def _decrypt_data(self, data):
+        assert self._encryption_key
+
+        from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+        from cryptography.hazmat.backends import default_backend
+        from binascii import a2b_base64
+
+        key = self._encryption_key
+        encoded_message = a2b_base64(data)
+
+        version = encoded_message[0:1]
+        tag = encoded_message[1:17]
+        initialization_vector = encoded_message[17:29]
+        encrypted_message = encoded_message[29:]
+
+        if version != b"1":
+            raise Exception("Invalid Version")
+
+        cipher = Cipher(algorithms.AES(key),
+                        modes.GCM(initialization_vector, tag),
+                        backend=default_backend())
+        decryptor = cipher.decryptor()
+
+        decrypted = decryptor.update(encrypted_message) + decryptor.finalize()
+        decrypted = decrypted.decode()
+
+        return(decrypted)
+
     def refresh(self):
         self._load_devices()
         self._load_chats()

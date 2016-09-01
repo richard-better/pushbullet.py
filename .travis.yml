@@ -7,6 +7,7 @@ python:
 install:
 - pip install .
 - pip install coveralls
+- pip install cryptography
 script: coverage run --source pushbullet -m py.test
 env:
 - PUSHBULLET_API_KEY=RrFnc1xaeQXnRrr2auoGA1e8pQ8MWmMF
