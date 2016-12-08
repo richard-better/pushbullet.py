@@ -27,13 +27,16 @@ class Pushbullet(object):
     UPLOAD_REQUEST_URL = "https://api.pushbullet.com/v2/upload-request"
     EPHEMERALS_URL = "https://api.pushbullet.com/v2/ephemerals"
 
-    def __init__(self, api_key, encryption_password=None):
+    def __init__(self, api_key, encryption_password=None, proxy=None):
         self.api_key = api_key
         self._json_header = {'Content-Type': 'application/json'}
 
         self._session = requests.Session()
         self._session.auth = (self.api_key, "")
         self._session.headers.update(self._json_header)
+
+        if proxy:
+            self._session.proxies.update(proxy)
 
         self.refresh()
 

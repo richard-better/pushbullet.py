@@ -318,6 +318,19 @@ When specified, all sent SMS will be encrypted. Note that the use of end-to-end 
 
 Note that Pushbullet supportes End-To-End encryption only in SMS, notification mirroring and universal copy & paste. Your pushes will not be end-to-end encrypted.
 
+Using a proxy
+^^^^^^^^^^^^^
+When specified, all requests to the API will be made through the proxy. Note that the use of SOCKS proxies
+requires the ``requests[socks]`` package (``pip install requests[socks]`` to install), however HTTP proxies (w/ Basic Auth) work fine without the ``requests[socks]`` package. 
+
+.. code:: python
+
+    from pushbullet import Pushbullet
+
+    pb = Pushbullet(api_key, proxy={"https": "https://user:pass@10.10.1.10:3128/"})
+
+Note that only HTTPS proxies work with Pushbullet.
+
 Error checking
 ~~~~~~~~~~~~~~
 
