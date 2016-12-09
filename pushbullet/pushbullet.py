@@ -36,6 +36,8 @@ class Pushbullet(object):
         self._session.headers.update(self._json_header)
 
         if proxy:
+            if "https" not in [k.lower() for k in proxy.keys()]:
+                raise ConnectionError("You can only use HTTPS proxies!")
             self._session.proxies.update(proxy)
 
         self.refresh()
