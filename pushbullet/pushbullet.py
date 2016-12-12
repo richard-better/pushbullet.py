@@ -158,7 +158,6 @@ class Pushbullet(object):
         else:
             raise PushbulletError(r.text)
 
-
     def edit_chat(self, chat, name):
         data = {"name": name}
         iden = chat.iden
@@ -170,7 +169,29 @@ class Pushbullet(object):
         else:
             raise PushbulletError(r.text)
 
+   def mute_chat(self, chat):
+        data = {"muted": True}
+        iden = chat.iden
+        r = self._session.post("{}/{}".format(self.CHATS_URL, iden), data=json.dumps(data))
+        if r.status_code == requests.codes.ok:
+            new_chat = Chat(self, r.json())
+            self.chats[self.chats.index(chat)] = new_chat
+            return new_chat
+        else:
+            raise PushbulletError(r.text)
 
+    def unmute_chat(self, chat):
+        data = {"muted": False}
+        iden = chat.iden
+        r = self._session.post("{}/{}".format(self.CHATS_URL, iden), data=json.dumps(data))
+        if r.status_code == requests.codes.ok:
+            new_chat = Chat(self, r.json())
+            self.chats[self.chats.index(chat)] = new_chat
+            return new_chat
+        else:
+            raise PushbulletError(r.text)
+            
+            
     def remove_device(self, device):
         iden = device.device_iden
         r = self._session.delete("{}/{}".format(self.DEVICES_URL, iden))
