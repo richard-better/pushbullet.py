@@ -1,3 +1,7 @@
 include LICENSE
 include readme.rst
 include requirements.txt
+graft tests
+graft example
+global-exclude __pycache__
+global-exclude *.py[co]
