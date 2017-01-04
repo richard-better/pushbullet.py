@@ -35,6 +35,9 @@ class Pushbullet(object):
         self._session.auth = (self.api_key, "")
         self._session.headers.update(self._json_header)
 
+        # RH: ADDED
+        self._most_recent_timestamp = 0
+
         if proxy:
             if "https" not in [k.lower() for k in proxy.keys()]:
                 raise ConnectionError("You can only use HTTPS proxies!")
@@ -223,7 +226,16 @@ class Pushbullet(object):
             else:
                 get_more_pushes = False
 
+        # RH: ADDED
+        if len(pushes_list) > 0 and pushes_list[0].get('modified',0) > self._most_recent_timestamp:
+            self._most_recent_timestamp = pushes_list[0]['modified']
+
         return pushes_list
+
+    # RH: ADDED
+    def get_new_pushes(self, limit=None, filter_inactive=True):
+        return self.get_pushes(modified_after=self._most_recent_timestamp,
+                               limit=limit, filter_inactive=filter_inactive)
 
     def dismiss_push(self, iden):
         data = {"dismissed": True}
