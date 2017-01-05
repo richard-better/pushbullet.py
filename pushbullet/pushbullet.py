@@ -109,7 +109,7 @@ class Pushbullet(object):
                 self.channels.append(c)
 
     @staticmethod
-    def _recipient(device=None, chat=None, email=None, channel=None):
+    def _recipient(device=None, chat=None, email=None, channel=None, source_device=None):
         data = dict()
 
         if device:
@@ -120,6 +120,8 @@ class Pushbullet(object):
             data["email"] = email
         elif channel:
             data["channel_tag"] = channel.channel_tag
+        if source_device:
+            data["source_device_iden"] = source_device.device_iden
 
         return data
 
@@ -264,7 +266,7 @@ class Pushbullet(object):
 
         return {"file_type": file_type, "file_url": file_url, "file_name": file_name}
 
-    def push_file(self, file_name, file_url, file_type, body=None, title=None, device=None, chat=None, email=None, channel=None):
+    def push_file(self, file_name, file_url, file_type, body=None, title=None, device=None, chat=None, email=None, channel=None, source_device=None):
         data = {"type": "file", "file_type": file_type, "file_url": file_url, "file_name": file_name}
         if body:
             data["body"] = body
@@ -272,14 +274,14 @@ class Pushbullet(object):
         if title:
             data["title"] = title
 
-        data.update(Pushbullet._recipient(device, chat, email, channel))
+        data.update(Pushbullet._recipient(device, chat, email, channel, source_device))
 
         return self._push(data)
 
-    def push_note(self, title, body, device=None, chat=None, email=None, channel=None):
+    def push_note(self, title, body, device=None, chat=None, email=None, channel=None, source_device=None):
         data = {"type": "note", "title": title, "body": body}
 
-        data.update(Pushbullet._recipient(device, chat, email, channel))
+        data.update(Pushbullet._recipient(device, chat, email, channel, source_device))
 
         return self._push(data)
 
