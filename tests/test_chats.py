@@ -26,7 +26,7 @@ class TestChats(object):
         print(self.chat)
 
     def test_push(self):
-        data = {"title": "test title"}
+        data = {"title": "test title", "muted": True}
         self.chat._push(data)
-        pushed_data = {"title": "test title", "email": self.contact_email}
+        pushed_data = {"title": "test title", "email": self.contact_email, "muted": True}
         self.account._push.assert_called_with(pushed_data)
