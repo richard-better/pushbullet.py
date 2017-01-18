@@ -159,8 +159,10 @@ class Pushbullet(object):
             raise PushbulletError(r.text)
 
 
-    def edit_chat(self, chat, name):
+    def edit_chat(self, chat, name, muted=None):
         data = {"name": name}
+        if muted is not None:
+            data["muted"] = muted
         iden = chat.iden
         r = self._session.post("{}/{}".format(self.CHATS_URL, iden), data=json.dumps(data))
         if r.status_code == requests.codes.ok:

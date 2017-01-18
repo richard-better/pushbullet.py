@@ -11,7 +11,7 @@ class Chat(Device):
         self.iden = chat_info.get("iden")
 
         contact_info = chat_info['with']
-        for attr in ("created", "modified"):
+        for attr in ("created", "modified", "muted"):
             setattr(self, attr, chat_info.get(attr))
         for attr in ("name", "email", "email_normalized", "image_url"):
             setattr(self, attr, contact_info.get(attr))
