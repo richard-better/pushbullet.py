@@ -11,10 +11,11 @@ def _guess_file_type(_, filename):
 # return str on python3.  Don't want to unconditionally
 # decode because that results in unicode on python2
 def maybe_decode(s):
-    if str == bytes:
-        return s.decode('utf-8')
-    else:
-        return s
+    try:
+        decoded = s.decode('utf-8')
+    except AttributeError as e:
+        decoded = s
+    return decoded
 
 
 try:
