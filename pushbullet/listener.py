@@ -1,20 +1,21 @@
+import asyncio
+
 __author__ = 'Igor Maculan <n3wtron@gmail.com>'
 
 import logging
 import time
 import json
-from threading import Thread
+# from threading import Thread
 
-import requests
-import websocket
-
+# import requests
+import websockets  # https://github.com/aaugustin/websockets
 
 log = logging.getLogger('pushbullet.Listener')
 
 WEBSOCKET_URL = 'wss://stream.pushbullet.com/websocket/'
 
 
-class Listener(Thread, websocket.WebSocketApp):
+class Listener():
     def __init__(self, account,
                  on_push=None,
                  on_error=None,
@@ -30,12 +31,12 @@ class Listener(Thread, websocket.WebSocketApp):
         self._api_key = self._account.api_key
         self.on_error = on_error
 
-        Thread.__init__(self)
-        websocket.WebSocketApp.__init__(self, WEBSOCKET_URL + self._api_key,
-                                        on_open=self.on_open,
-                                        on_error=self.on_error,
-                                        on_message=self.on_message,
-                                        on_close=self.on_close)
+        # Thread.__init__(self)
+        # websocket.WebSocketApp.__init__(self, WEBSOCKET_URL + self._api_key,
+        #                                 on_open=self.on_open,
+        #                                 on_error=self.on_error,
+        #                                 on_message=self.on_message,
+        #                                 on_close=self.on_close)
 
         self.connected = False
         self.last_update = time.time()
@@ -71,16 +72,38 @@ class Listener(Thread, websocket.WebSocketApp):
         log.debug('Message received:' + message)
         try:
             json_message = json.loads(message)
-            if json_message["type"] != "nop":
+            if json_message["type"] != "nop" and callable(self.on_push):
                 self.on_push(json_message)
         except Exception as e:
             logging.exception(e)
 
-    def run_forever(self, sockopt=None, sslopt=None, ping_interval=0, ping_timeout=None):
-        websocket.WebSocketApp.run_forever(self, sockopt=sockopt, sslopt=sslopt, ping_interval=ping_interval,
-                                           ping_timeout=ping_timeout,
-                                           http_proxy_host=self.http_proxy_host,
-                                           http_proxy_port=self.http_proxy_port)
+    @asyncio.coroutine
+    def connect(self):
+        """
+        Begins listening to the websocket on an event loop.
 
-    def run(self):
-        self.run_forever()
+        Example:
+            asyncio.ensure_future(listener.connect())
+        """
+        ws = yield from websockets.connect(WEBSOCKET_URL + self._api_key)
+        self.on_open(ws)
+        while True:
+            try:
+                message = yield from ws.recv()
+                self.on_message(ws, message)
+            except websockets.ConnectionClosed as ex:
+                self.on_close(ws)
+            except Exception as ex:
+                if callable(self.on_error):
+                    self.on_error(ws, ex)
+                else:
+                    raise ex
+
+    # def run_forever(self, sockopt=None, sslopt=None, ping_interval=0, ping_timeout=None):
+    #     websocket.WebSocketApp.run_forever(self, sockopt=sockopt, sslopt=sslopt, ping_interval=ping_interval,
+    #                                        ping_timeout=ping_timeout,
+    #                                        http_proxy_host=self.http_proxy_host,
+    #                                        http_proxy_port=self.http_proxy_port)
+
+    # def run(self):
+    #     self.run_forever()
