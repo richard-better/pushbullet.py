@@ -60,8 +60,8 @@ class Pushbullet(object):
             )
             self._encryption_key = kdf.derive(encryption_password.encode("UTF-8"))
 
-    def _get_data(self, url):
-        resp = self._session.get(url)
+    def _get_data(self, url, prms=None):
+        resp = self._session.get(url,params=prms)
 
         if resp.status_code in (401, 403):
             raise InvalidKeyError()
@@ -99,14 +99,20 @@ class Pushbullet(object):
 
     def _load_channels(self):
         self.channels = []
-
+        get_more_channels = True
         resp_dict = self._get_data(self.CHANNELS_URL)
-        channel_list = resp_dict.get("channels", [])
-
-        for channel_info in channel_list:
-            if channel_info.get("active"):
-                c = Channel(self, channel_info)
-                self.channels.append(c)
+        while get_more_channels == True:
+            print resp_dict
+            channel_list = resp_dict.get("channels", [])
+            for channel_info in channel_list:
+                if channel_info.get("active"):
+                    c = Channel(self, channel_info)
+                    self.channels.append(c)
+            if "cursor" in resp_dict:
+                cursor = resp_dict.get("cursor")
+                resp_dict = self._get_data(self.CHANNELS_URL,prms={'cursor' : cursor})
+            else:
+                get_more_channels = False
 
     @staticmethod
     def _recipient(device=None, chat=None, email=None, channel=None):
