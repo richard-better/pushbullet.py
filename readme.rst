@@ -86,22 +86,6 @@ Pushing a text note
 
 ``push`` is a dictionary containing the data returned by the Pushbullet API.
 
-Pushing an address
-^^^^^^^^^^^^^^^^^^
-
-.. code:: python
-
-    address = " 25 E 85th St, 10028 New York, NY"
-    push = pb.push_address("home", address)
-
-Pushing a list
-^^^^^^^^^^^^^^
-
-.. code:: python
-
-    to_buy = ["milk", "bread", "cider"]
-    push = pb.push_list("Shopping list", to_buy)
-
 Pushing a link
 ^^^^^^^^^^^^^^
 
