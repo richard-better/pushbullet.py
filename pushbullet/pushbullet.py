@@ -102,7 +102,6 @@ class Pushbullet(object):
         get_more_channels = True
         resp_dict = self._get_data(self.CHANNELS_URL)
         while get_more_channels == True:
-            print resp_dict
             channel_list = resp_dict.get("channels", [])
             for channel_info in channel_list:
                 if channel_info.get("active"):
