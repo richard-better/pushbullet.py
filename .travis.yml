@@ -1,11 +1,10 @@
 language: python
 python:
 - '2.7'
-- '3.3'
 - '3.4'
 - '3.5'
+- '3.6'
 install:
-- pip install -U setuptools
 - pip install .
 - pip install coveralls
 - pip install cryptography
@@ -18,7 +17,6 @@ deploy:
   on:
     tags: true
     all_branches: true
-    python: '3.4'
   distributions: sdist bdist_wheel
   password:
     secure: AF3VwPWZS4wDEuwhixbYJyF5jgWccAusPOq4ZdVOGzOmxAnc4DSuEr3sx6Z9HC3Svnw6nncbwx7nCCfrhX9va68xKiyNzkwa2jWnHWWKiYbGIY5oOsy728ElUA3cBg3fJWQy/+5wWdoS4a21jYw1MtqgVmMgEV3V3MvAy5nz98A=
