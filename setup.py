@@ -14,7 +14,7 @@ if sys.argv[-1] == 'publish':
 install_reqs = [
     "requests>=1.0.0",
     "python-magic",
-    "websocket-client>=0.42.1"
+    "websocket-client>=0.53.0"
 ]
 
 
