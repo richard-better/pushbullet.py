@@ -59,15 +59,15 @@ class Listener(Thread, websocket.WebSocketApp):
     def clean_history(self):
         self.history = []
 
-    def on_open(self, ws):
+    def on_open(self):
         self.connected = True
         self.last_update = time.time()
 
-    def on_close(self, ws):
+    def on_close(self):
         log.debug('Listener closed')
         self.connected = False
 
-    def on_message(self, ws, message):
+    def on_message(self, message):
         log.debug('Message received:' + message)
         try:
             json_message = json.loads(message)
