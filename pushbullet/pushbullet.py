@@ -26,6 +26,7 @@ class Pushbullet(object):
     PUSH_URL = "https://api.pushbullet.com/v2/pushes"
     UPLOAD_REQUEST_URL = "https://api.pushbullet.com/v2/upload-request"
     EPHEMERALS_URL = "https://api.pushbullet.com/v2/ephemerals"
+    PERMANENTS_URL = "https://api.pushbullet.com/v2/permanents"
 
     def __init__(self, api_key, encryption_password=None, proxy=None):
         self.api_key = api_key
@@ -353,3 +354,42 @@ class Pushbullet(object):
         self._load_chats()
         self._load_user_info()
         self._load_channels()
+
+    def _get_json(self, r):
+        if hasattr(r, 'json'):
+            if r.json().get('encrypted'):
+                return json.loads(self._decrypt_data(r.json().get('ciphertext')))
+            else:
+                return r.json()
+        return {}
+
+    def get_permanents(self, device, modified_after=None, limit=None, filter_inactive=True):
+        thread_url = '_threads'
+        thread_element = 'threads'
+        return self._get_permanents(device, thread_url, thread_element, modified_after=modified_after, limit=limit,
+                                    filter_inactive=filter_inactive)
+
+    def get_permanent(self, device, thread, modified_after=None, limit=None, filter_inactive=True):
+        thread_url = '_thread_' + str(thread)
+        thread_element = 'thread'
+        return self._get_permanents(device, thread_url, thread_element, modified_after=modified_after, limit=limit,
+                                    filter_inactive=filter_inactive)
+
+    def _get_permanents(self, device, thread_url, thread_element, modified_after=None, limit=None,
+                        filter_inactive=True):
+        data = {"modified_after": modified_after, "limit": limit}
+        if filter_inactive:
+            data['active'] = "true"
+        permanents_list = []
+        get_more_permanents = True
+        while get_more_permanents:
+            r = self._session.get(self.PERMANENTS_URL + '/' + device.device_iden + thread_url, params=data)
+            if r.status_code != requests.codes.ok:
+                raise PushbulletError(r.text)
+            json_data = self._get_json(r)
+            permanents_list += json_data.get(thread_element)
+            if 'cursor' in json_data and (not limit or len(permanents_list) < limit):
+                data['cursor'] = json_data['cursor']
+            else:
+                get_more_permanents = False
+        return permanents_list
