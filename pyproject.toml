@@ -1,0 +1,59 @@
+
+[tool.coverage.run]
+branch = true
+parallel = true
+source = ["pushbullet"]
+
+[tool.coverage.report]
+exclude_lines = ["^if __name__ == .__main__.:$]"]
+omit = ["tests/*"]
+show_missing = true
+skip_covered = true
+
+[tool.coverage.paths]
+source = [
+    "pushbullet",
+    ".tox/*/lib/python*/site-packages/pushbullet",
+    ".tox/*/Lib/site-packages/pushbullet",
+]
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+envlist = py27, py38
+
+[testenv]
+deps =
+    pytest
+    cryptography
+    mock
+    coverage[toml]
+    python-magic
+commands = coverage run --source pushbullet -m py.test {posargs}
+passenv = PUSHBULLET_API_KEY
+setenv = COVERAGE_FILE={toxworkdir}/.coverage.{envname}
+
+[testenv:coverage]
+description = [run locally after tests]: combine coverage data and create report
+deps =
+    coverage[toml]
+skip_install = True
+passenv =
+    {[testenv]passenv}
+    DIFF_AGAINST
+setenv = COVERAGE_FILE={toxworkdir}/.coverage
+commands =
+    coverage combine --rcfile pyproject.toml
+    coverage report -m --rcfile pyproject.toml
+    coverage xml -o {toxworkdir}/coverage.xml --rcfile pyproject.toml
+    coverage html -d {toxworkdir}/htmlcov --rcfile pyproject.toml
+depends =
+    py27,
+    py38,
+parallel_show_output = True 
+
+[gh-actions]
+python =
+    2.7: py27
+    3.8: py38
+"""
