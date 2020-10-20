@@ -18,14 +18,6 @@ class Channel(object):
         data = {"type": "note", "title": title, "body": body}
         return self._push(data)
 
-    def push_address(self, name, address):
-        warnings.warn("Address push type is removed. This push will be sent as note.")
-        return self.push_note(name, address)
-
-    def push_list(self, title, items):
-        warnings.warn("List push type is removed. This push will be sent as note.")
-        return self.push_note(title, ",".join(items))
-
     def push_link(self, title, url, body=None):
         data = {"type": "link", "title": title, "url": url, "body": body}
         return self._push(data)
