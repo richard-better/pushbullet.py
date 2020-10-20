@@ -275,7 +275,11 @@ class Pushbullet(object):
     def _push(self, data):
         r = self._session.post(self.PUSH_URL, data=json.dumps(data))
         if r.status_code == requests.codes.ok:
-            return r.json()
+            js = r.json()
+            js['Ratelimit-Reset'] = r.headers['X-Ratelimit-Reset']
+            js['Ratelimit-Limit'] = r.headers['X-Ratelimit-Limit']
+            js['Ratelimit-Remaining'] = r.headers['X-Ratelimit-Remaining']
+            return js
         else:
             raise PushError(r.text)
 
