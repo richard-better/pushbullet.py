@@ -8,12 +8,7 @@
 
 ![image](https://img.shields.io/pypi/l/pushbullet.py.svg)
 
-This is a python library for the wonderful
-[Pushbullet](https://www.pushbullet.com) service. It allows you to send
-push notifications to
-[Android](https://play.google.com/store/apps/details?id=com.pushbullet.android)
-and [iOS](https://itunes.apple.com/us/app/pushbullet/id810352052)
-devices.
+This is a python library for the wonderful [Pushbullet](https://www.pushbullet.com) service. It allows you to send push notifications to [Android](https://play.google.com/store/apps/details?id=com.pushbullet.android) devices.
 
 In order to use the API you need an API key that can be obtained
 [here](https://www.pushbullet.com/account). This is user specific and is
