@@ -32,6 +32,8 @@ jobs:
         run: tox
         env:
           PUSHBULLET_API_KEY: ${{ secrets.PUSHBULLET_API_KEY }}
+      - name: Generate coverage report
+        run: tox -e coverage
       - uses: codecov/codecov-action@v1
         with:
           file: .tox/coverage.xml
