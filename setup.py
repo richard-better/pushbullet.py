@@ -28,13 +28,13 @@ def read(fname):
 setup(
     name = "pushbullet.py",
     version = version,
-    author = "Richard Borcsik",
-    author_email = "borcsikrichard@gmail.com",
+    author = "Richard B",
+    author_email = "pypi@richardb.me",
     description = ("A simple python client for pushbullet.com"),
     license = "MIT",
     keywords = "push android pushbullet notification",
-    url = "https://github.com/randomchars/pushbullet.py",
-    download_url="https://github.com/randomchars/pushbullet.py/tarball/" + version,
+    url = "https://github.com/rbrcsk/pushbullet.py",
+    download_url="https://github.com/rbrcsk/pushbullet.py/tarball/" + version,
     packages=['pushbullet'],
     long_description=read('readme.md'),
     classifiers=[
