@@ -2,19 +2,14 @@ import os
 import json
 import requests
 import warnings
+from requests import ConnectionError
 
 from .device import Device
 from .channel import Channel
 from .chat import Chat
-from .errors import PushbulletError, InvalidKeyError, PushError
+from .errors import PushbulletError, InvalidKeyError, PushError, NoEncryptionModuleError
 from .filetype import get_file_type
 from ._compat import standard_b64encode
-
-
-class NoEncryptionModuleError(Exception):
-    def __init__(self, msg):
-        super(NoEncryptionModuleError, self).__init__(
-            "cryptography is required for end-to-end encryption support and could not be imported: " + msg + "\nYou can install it by running 'pip install cryptography'")
 
 
 class Pushbullet(object):
