@@ -1,18 +1,28 @@
 from __future__ import print_function
 
-import mock
+try:
+    from unittest.mock import Mock
+except ImportError:
+    from mock import Mock
+
 import time
 
 from pushbullet import channel
 
 
 class TestChannels(object):
-
     @classmethod
     def setup_class(cls):
         cls.channel_tag = "test_tag"
-        channel_info = {'iden': "test_iden", 'name': 'test channel', 'created': time.time(), 'modified': time.time(), 'tag': cls.channel_tag, 'active': True}
-        cls.account = mock.Mock(return_value=True)
+        channel_info = {
+            "iden": "test_iden",
+            "name": "test channel",
+            "created": time.time(),
+            "modified": time.time(),
+            "tag": cls.channel_tag,
+            "active": True,
+        }
+        cls.account = Mock(return_value=True)
         cls.channel = channel.Channel(cls.account, channel_info)
 
     def test_encoding_support(self):
@@ -21,13 +31,21 @@ class TestChannels(object):
         print(self.channel)
 
     def test_repr(self):
-        assert repr(self.channel) == "Channel(name: 'test channel' tag: '%s')" % self.channel_tag
+        assert (
+            repr(self.channel)
+            == "Channel(name: 'test channel' tag: '%s')" % self.channel_tag
+        )
 
     def test_push_note(self):
         title = "test title"
         body = "test body"
         self.channel.push_note(title, body)
-        pushed_data = {"type": "note", "title": title, "body": body, "channel_tag": self.channel_tag}
+        pushed_data = {
+            "type": "note",
+            "title": title,
+            "body": body,
+            "channel_tag": self.channel_tag,
+        }
         self.account._push.assert_called_with(pushed_data)
 
     def test_push_link(self):
@@ -35,7 +53,13 @@ class TestChannels(object):
         url = "http://test.url"
         body = "test body"
         self.channel.push_link(title, url, body)
-        pushed_data = {"type": "link", "title": title, "url": url, "body": body, "channel_tag": self.channel_tag}
+        pushed_data = {
+            "type": "link",
+            "title": title,
+            "url": url,
+            "body": body,
+            "channel_tag": self.channel_tag,
+        }
         self.account._push.assert_called_with(pushed_data)
 
     def test_push_file(self):
@@ -45,7 +69,9 @@ class TestChannels(object):
         body = "test body"
         title = "test title"
         self.channel.push_file(file_name, file_url, file_type, body=body, title=title)
-        self.account.push_file.assert_called_with(file_name, file_url, file_type, body=body, title=title, channel=self.channel)
+        self.account.push_file.assert_called_with(
+            file_name, file_url, file_type, body=body, title=title, channel=self.channel
+        )
 
     def test_push(self):
         data = {"title": "test title"}
