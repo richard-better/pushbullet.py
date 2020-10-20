@@ -2,19 +2,14 @@ import os
 import json
 import requests
 import warnings
+from requests import ConnectionError
 
 from .device import Device
 from .channel import Channel
 from .chat import Chat
-from .errors import PushbulletError, InvalidKeyError, PushError
+from .errors import PushbulletError, InvalidKeyError, PushError, NoEncryptionModuleError
 from .filetype import get_file_type
 from ._compat import standard_b64encode
-
-
-class NoEncryptionModuleError(Exception):
-    def __init__(self, msg):
-        super(NoEncryptionModuleError, self).__init__(
-            "cryptography is required for end-to-end encryption support and could not be imported: " + msg + "\nYou can install it by running 'pip install cryptography'")
 
 
 class Pushbullet(object):
@@ -276,9 +271,12 @@ class Pushbullet(object):
         r = self._session.post(self.PUSH_URL, data=json.dumps(data))
         if r.status_code == requests.codes.ok:
             js = r.json()
-            js['Ratelimit-Reset'] = r.headers['X-Ratelimit-Reset']
-            js['Ratelimit-Limit'] = r.headers['X-Ratelimit-Limit']
-            js['Ratelimit-Remaining'] = r.headers['X-Ratelimit-Remaining']
+            rate_limit = {}
+            rate_limit['reset'] = r.headers.get('X-Ratelimit-Reset')
+            rate_limit['limit'] = r.headers.get('X-Ratelimit-Limit')
+            rate_limit['remaining'] = r.headers.get('X-Ratelimit-Remaining')
+
+            js["rate_limit"] = rate_limit
             return js
         else:
             raise PushError(r.text)
