@@ -1,5 +1,5 @@
 def _magic_get_file_type(f, _):
-    file_type = magic.from_buffer(f.read(1024), mime=True)
+    file_type = magic_from_buffer(f.read(1024), mime=True)
     f.seek(0)
     return maybe_decode(file_type)
 
@@ -19,7 +19,7 @@ def maybe_decode(s):
 
 
 try:
-    import magic
+    from magic import from_buffer as magic_from_buffer
 except ImportError:
     import mimetypes
     get_file_type = _guess_file_type
