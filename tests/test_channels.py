@@ -53,6 +53,13 @@ class TestChannels(object):
         url = "http://test.url"
         body = "test body"
         self.channel.push_link(title, url, body)
+        pushed_data = {
+            "type": "link",
+            "title": title,
+            "url": url,
+            "body": body,
+            "channel_tag": self.channel_tag,
+        }
         self.account._push.assert_called_with(pushed_data)
 
     def test_push_file(self):
