@@ -2,7 +2,7 @@
 
 ![image](https://img.shields.io/travis/randomchars/pushbullet.py.svg?style=flat-square%0A%20:target:%20https://travis-ci.org/randomchars/pushbullet.py)
 
-![image](https://img.shields.io/coveralls/randomchars/pushbullet.py.svg?style=flat-square%0A%20:target:%20https://coveralls.io/r/randomchars/pushbullet.py)
+[![codecov](https://codecov.io/gh/rbrcsk/pushbullet.py/branch/master/graph/badge.svg?token=LrMLk9X4Zs)](https://codecov.io/gh/rbrcsk/pushbullet.py)
 
 ![image](https://img.shields.io/pypi/v/pushbullet.py.svg?style=flat-square%0A%20:target:%20https://pypi.org/project/pushbullet.py/)
 
