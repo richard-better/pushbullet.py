@@ -106,7 +106,7 @@ class Pushbullet(object):
 
     @staticmethod
     def _recipient(device=None, chat=None, email=None, channel=None):
-        data = dict()
+        data = {}
         if device:
             data["device_iden"] = device.device_iden
         elif chat:
