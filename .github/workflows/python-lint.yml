@@ -5,13 +5,12 @@ name: Python package
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 5
@@ -19,15 +18,17 @@ jobs:
         python-version: [2.7, 3.8]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install flake8 pytest pylint tox tox-gh-actions
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Test with tox
-      run: tox
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 pytest pylint tox tox-gh-actions
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Test with tox
+        run: tox
+        env:
+          PUSHBULLET_API_KEY: ${{ secrets.PUSHBULLET_API_KEY }}
