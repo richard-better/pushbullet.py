@@ -36,7 +36,7 @@ setup(
     url = "https://github.com/rbrcsk/pushbullet.py",
     download_url="https://github.com/rbrcsk/pushbullet.py/tarball/" + version,
     packages=['pushbullet'],
-    long_description=read('readme.md'),
+    long_description=read('readme.rst'),
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
