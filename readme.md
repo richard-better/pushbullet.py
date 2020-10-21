@@ -1,6 +1,7 @@
 # pushbullet.py
 
 ![Lint and Test Package](https://github.com/rbrcsk/pushbullet.py/workflows/Lint%20and%20Test%20Package/badge.svg?branch=master&event=push)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Frbrcsk%2Fpushbullet.py.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Frbrcsk%2Fpushbullet.py?ref=badge_shield)
 
 [![codecov](https://codecov.io/gh/rbrcsk/pushbullet.py/branch/master/graph/badge.svg?token=LrMLk9X4Zs)](https://codecov.io/gh/rbrcsk/pushbullet.py)
 
@@ -309,3 +310,6 @@ contains a list of possible status codes.
 ## License
 
 MIT license. See LICENSE for full text.
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Frbrcsk%2Fpushbullet.py.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Frbrcsk%2Fpushbullet.py?ref=badge_large)
