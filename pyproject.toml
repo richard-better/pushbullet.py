@@ -1,3 +1,12 @@
+[tool.black]
+line-length = 120
+target-version = ["py38"]
+
+[tool.isort]
+profile = "black"
+src_paths = ["src", "tests", "exa,ple"]
+line_length = 120
+known_first_party = "pushbullet"
 
 [tool.coverage.run]
 branch = true
