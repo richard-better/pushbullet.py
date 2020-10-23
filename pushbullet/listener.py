@@ -5,7 +5,6 @@ import logging
 import time
 from threading import Thread
 
-import requests
 import websocket
 
 log = logging.getLogger("pushbullet.Listener")

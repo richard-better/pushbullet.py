@@ -356,7 +356,7 @@ def test_get_pushes_no_cursor():
 
 
 @patch.object(PushBullet, "refresh", mock_refresh)
-def test_get_pushes_no_cursor():
+def test_get_pushes_with_cursor():
     response1 = Mock()
     response1.status_code = 200
     response1.json.return_value = {"pushes": ["push1", "push2"], "cursor": "cursor1"}

@@ -35,7 +35,7 @@ class Mirrorer(object):
                 device = self.pb.new_device(device_name)
                 print("Created new device:", device_name, "iden:", device.device_iden)
                 self.device = device
-            except:
+            except Exception:
                 print("Error: Unable to create device")
                 raise
 

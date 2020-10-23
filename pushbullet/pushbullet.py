@@ -1,6 +1,5 @@
 import json
 import os
-import warnings
 
 import requests
 from requests import ConnectionError
@@ -249,7 +248,7 @@ class Pushbullet(object):
         file_url = r.json().get("file_url")
         upload_url = r.json().get("upload_url")
 
-        upload = requests.post(upload_url, data=upload_data, files={"file": f})
+        requests.post(upload_url, data=upload_data, files={"file": f})
 
         return {"file_type": file_type, "file_url": file_url, "file_name": file_name}
 

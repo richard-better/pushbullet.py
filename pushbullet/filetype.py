@@ -18,6 +18,6 @@ def get_file_type(file, filename):
 def maybe_decode(s):
     try:
         decoded = s.decode("utf-8")
-    except AttributeError as e:
+    except AttributeError:
         decoded = s
     return decoded

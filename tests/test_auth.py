@@ -8,8 +8,8 @@ API_KEY = os.environ["PUSHBULLET_API_KEY"]
 
 
 def test_auth_fail():
-    with pytest.raises(pushbullet.InvalidKeyError) as exinfo:
-        pb = pushbullet.Pushbullet("faultykey")
+    with pytest.raises(pushbullet.InvalidKeyError):
+        pushbullet.Pushbullet("faultykey")
 
 
 def test_auth_success():
