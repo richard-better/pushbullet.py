@@ -10,4 +10,4 @@ else:
 
     from base64 import standard_b64encode
 
-__all__ = ['standard_b64encode']
+__all__ = ["standard_b64encode"]

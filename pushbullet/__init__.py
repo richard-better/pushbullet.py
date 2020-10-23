@@ -1,7 +1,7 @@
 from .__version__ import __version__
-from .pushbullet import Pushbullet
 from .device import Device
+from .errors import InvalidKeyError, PushbulletError, PushError
 from .listener import Listener
-from .errors import PushbulletError, InvalidKeyError, PushError
+from .pushbullet import Pushbullet
 
 PushBullet = Pushbullet

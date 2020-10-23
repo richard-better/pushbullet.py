@@ -1,4 +1,4 @@
-from pushbullet import PushBullet, Listener
+from pushbullet import Listener, PushBullet
 
 try:
     from unittest.mock import patch

@@ -1,16 +1,15 @@
 from __future__ import unicode_literals
 
-from .helpers import use_appropriate_encoding
 from .device import Device
+from .helpers import use_appropriate_encoding
 
 
 class Chat(Device):
-
     def __init__(self, account, chat_info):
         self._account = account
         self.iden = chat_info.get("iden")
 
-        contact_info = chat_info['with']
+        contact_info = chat_info["with"]
         for attr in ("created", "modified", "muted"):
             setattr(self, attr, chat_info.get(attr))
         for attr in ("name", "email", "email_normalized", "image_url"):

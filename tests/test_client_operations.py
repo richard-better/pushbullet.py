@@ -1,18 +1,20 @@
 import pytest
+
 from pushbullet import PushBullet
 
 try:
-    from unittest.mock import patch, Mock
+    from unittest.mock import Mock, patch
 except ImportError:
     from mock import patch, Mock
 
-from .helpers import mock_refresh
-
-from pushbullet.errors import PushbulletError
 import json
-from pushbullet.device import Device
-from pushbullet.chat import Chat
+
 from pushbullet.channel import Channel
+from pushbullet.chat import Chat
+from pushbullet.device import Device
+from pushbullet.errors import PushbulletError
+
+from .helpers import mock_refresh
 
 
 @patch.object(PushBullet, "refresh", mock_refresh)
@@ -393,9 +395,7 @@ def test_dismiss_push():
 
     pb.dismiss_push("123")
 
-    session.post.assert_called_once_with(
-        pb.PUSH_URL + "/123", data=json.dumps({"dismissed": True})
-    )
+    session.post.assert_called_once_with(pb.PUSH_URL + "/123", data=json.dumps({"dismissed": True}))
 
 
 @patch.object(PushBullet, "refresh", mock_refresh)

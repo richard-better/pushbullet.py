@@ -6,7 +6,6 @@ from .helpers import use_appropriate_encoding
 
 
 class Channel(object):
-
     def __init__(self, account, channel_info):
         self._account = account
         self.channel_tag = channel_info.get("tag")

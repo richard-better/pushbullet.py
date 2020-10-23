@@ -1,19 +1,19 @@
 import sys
+from binascii import a2b_base64
+
 import pytest
 from requests import ConnectionError
-from binascii import a2b_base64
 
 from pushbullet import PushBullet
 from pushbullet.errors import NoEncryptionModuleError
 
 try:
-    from unittest.mock import patch, Mock
+    from unittest.mock import Mock, patch
 except ImportError:
     from mock import patch, Mock
 
+from .fixtures import channels_list_response, chats_list_response, devices_list_response
 from .helpers import mock_refresh
-
-from .fixtures import devices_list_response, chats_list_response, channels_list_response
 
 
 @patch.object(PushBullet, "refresh")
@@ -49,9 +49,7 @@ def test_crypto_found():
 
     pb = PushBullet("apikey", encryption_password="hunter2")
 
-    assert pb._encryption_key == a2b_base64(
-        "ZFKZG50hJs5DrGKWf8fBQ6CSLB1LtTNw+xwwT2ZBl9g="
-    )
+    assert pb._encryption_key == a2b_base64("ZFKZG50hJs5DrGKWf8fBQ6CSLB1LtTNw+xwwT2ZBl9g=")
 
 
 @patch.object(PushBullet, "refresh")
