@@ -352,7 +352,7 @@ def test_get_pushes_no_cursor():
     pushes = pb.get_pushes(filter_inactive=False)
 
     assert len(pushes) == 0
-    session.get.assert_called_once_with(pb.PUSH_URL, params={"modified_after": None, "limit": None, "active": False})
+    session.get.assert_called_once_with(pb.PUSH_URL, params={"modified_after": None, "limit": None})
 
 
 @patch.object(PushBullet, "refresh", mock_refresh)
