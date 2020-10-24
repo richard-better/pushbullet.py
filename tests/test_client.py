@@ -1,14 +1,15 @@
-from pushbullet import PushBullet
 import pytest
 
+from pushbullet import PushBullet
+
 try:
-    from unittest.mock import patch, Mock
+    from unittest.mock import Mock, patch
 except ImportError:
     from mock import patch, Mock
 
-from .helpers import mock_refresh
-
 from pushbullet.errors import InvalidKeyError, PushbulletError
+
+from .helpers import mock_refresh
 
 
 @patch.object(PushBullet, "refresh", mock_refresh)

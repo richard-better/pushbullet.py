@@ -1,9 +1,10 @@
-import os
 import json
+import os
+from binascii import a2b_base64
 
 import pytest
+
 from pushbullet import PushBullet
-from binascii import a2b_base64
 
 try:
     from unittest.mock import patch

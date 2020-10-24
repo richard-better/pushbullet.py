@@ -2,18 +2,19 @@
 A simple example showing how to mirror notifications.
 """
 
-import json
-import hashlib
 import base64
+import hashlib
+import json
+import os
 import subprocess
-import os, sys
+import sys
 import time
 
-from pushbullet import PushBullet, Listener
+from pushbullet import Listener, PushBullet
+
 
 class Mirrorer(object):
-
-    def __init__(self, auth_key, temp_folder, device_name, last_push = time.time(), device_iden=None):
+    def __init__(self, auth_key, temp_folder, device_name, last_push=time.time(), device_iden=None):
         self.temp_folder = temp_folder
         if not os.path.exists(self.temp_folder):
             os.makedirs(temp_folder)
@@ -32,12 +33,11 @@ class Mirrorer(object):
         if not self.device:
             try:
                 device = self.pb.new_device(device_name)
-                print("Created new device:",device_name,"iden:",device.device_iden)
+                print("Created new device:", device_name, "iden:", device.device_iden)
                 self.device = device
-            except:
+            except Exception:
                 print("Error: Unable to create device")
                 raise
-
 
         self.check_pushes()
 
@@ -55,10 +55,12 @@ class Mirrorer(object):
     def check_pushes(self):
         pushes = self.pb.get_pushes(self.last_push)
         for push in pushes:
-            if not isinstance(push,dict): 
+            if not isinstance(push, dict):
                 # not a push object
                 continue
-            if ((push.get("target_device_iden", self.device.device_iden) == self.device.device_iden) and not (push.get("dismissed", True))):
+            if (push.get("target_device_iden", self.device.device_iden) == self.device.device_iden) and not (
+                push.get("dismissed", True)
+            ):
                 self.notify(push.get("title", ""), push.get("body", ""))
                 self.pb.dismiss_push(push.get("iden"))
             self.last_push = max(self.last_push, push.get("created"))
@@ -67,12 +69,10 @@ class Mirrorer(object):
         if push["type"] == "push" and push["push"]["type"] == "mirror":
             print("MIRROR")
             image_path = self.save_icon(push["push"]["icon"])
-            self.notify(push["push"]["title"],
-                        push["push"]["body"], image_path)
+            self.notify(push["push"]["title"], push["push"]["body"], image_path)
         elif push["type"] == "tickle":
             print("TICKLE")
             self.check_pushes()
-
 
     def notify(self, title, body, image=None):
         subprocess.Popen(["notify-send", title, body, "-i", image or ""])
@@ -80,10 +80,12 @@ class Mirrorer(object):
         print(body)
 
     def dump_config(self, path):
-        config = {"temp_folder": self.temp_folder,
-                  "auth_key": self._auth_key,
-                  "device_name": self.device.nickname,
-                  "device_iden": self.device.device_iden}
+        config = {
+            "temp_folder": self.temp_folder,
+            "auth_key": self._auth_key,
+            "device_name": self.device.nickname,
+            "device_iden": self.device.device_iden,
+        }
         with open(path, "w") as conf:
             json.dump(config, conf)
 
@@ -92,7 +94,7 @@ class Mirrorer(object):
             self.listener.run_forever()
         except KeyboardInterrupt:
             self.listener.close()
-    
+
 
 def main():
     config_file = sys.argv[1]
@@ -104,5 +106,5 @@ def main():
     m.dump_config(config_file)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

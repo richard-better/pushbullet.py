@@ -1,20 +1,29 @@
 from __future__ import unicode_literals
 
-import warnings
-
 from .helpers import use_appropriate_encoding
 
 
 class Device(object):
-
     def __init__(self, account, device_info):
         self._account = account
         self.device_iden = device_info.get("iden")
         if not device_info.get("icon", None):
             device_info["icon"] = "system"
-        for attr in ("push_token", "app_version", "fingerprint", "created", "modified",
-                    "active", "nickname", "generated_nickname", "manufacturer", "icon",
-                    "model", "has_sms", "key_fingerprint"):
+        for attr in (
+            "push_token",
+            "app_version",
+            "fingerprint",
+            "created",
+            "modified",
+            "active",
+            "nickname",
+            "generated_nickname",
+            "manufacturer",
+            "icon",
+            "model",
+            "has_sms",
+            "key_fingerprint",
+        ):
             setattr(self, attr, device_info.get(attr))
 
     def push_note(self, title, body):

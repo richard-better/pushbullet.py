@@ -1,25 +1,19 @@
-__author__ = 'Igor Maculan <n3wtron@gmail.com>'
+__author__ = "Igor Maculan <n3wtron@gmail.com>"
 
+import json
 import logging
 import time
-import json
 from threading import Thread
 
-import requests
 import websocket
 
+log = logging.getLogger("pushbullet.Listener")
 
-log = logging.getLogger('pushbullet.Listener')
-
-WEBSOCKET_URL = 'wss://stream.pushbullet.com/websocket/'
+WEBSOCKET_URL = "wss://stream.pushbullet.com/websocket/"
 
 
 class Listener(Thread, websocket.WebSocketApp):
-    def __init__(self, account,
-                 on_push=None,
-                 on_error=None,
-                 http_proxy_host=None,
-                 http_proxy_port=None):
+    def __init__(self, account, on_push=None, on_error=None, http_proxy_host=None, http_proxy_port=None):
         """
         :param api_key: pushbullet Key
         :param on_push: function that get's called on all pushes
@@ -31,11 +25,14 @@ class Listener(Thread, websocket.WebSocketApp):
         self.on_error = on_error
 
         Thread.__init__(self)
-        websocket.WebSocketApp.__init__(self, WEBSOCKET_URL + self._api_key,
-                                        on_open=self.on_open,
-                                        on_error=self.on_error,
-                                        on_message=self.on_message,
-                                        on_close=self.on_close)
+        websocket.WebSocketApp.__init__(
+            self,
+            WEBSOCKET_URL + self._api_key,
+            on_open=self.on_open,
+            on_error=self.on_error,
+            on_message=self.on_message,
+            on_close=self.on_close,
+        )
 
         self.connected = False
         self.last_update = time.time()
@@ -64,11 +61,11 @@ class Listener(Thread, websocket.WebSocketApp):
         self.last_update = time.time()
 
     def on_close(self):
-        log.debug('Listener closed')
+        log.debug("Listener closed")
         self.connected = False
 
     def on_message(self, message):
-        log.debug('Message received:' + message)
+        log.debug("Message received:" + message)
         try:
             json_message = json.loads(message)
             if json_message["type"] != "nop":
@@ -77,10 +74,15 @@ class Listener(Thread, websocket.WebSocketApp):
             logging.exception(e)
 
     def run_forever(self, sockopt=None, sslopt=None, ping_interval=0, ping_timeout=None):
-        websocket.WebSocketApp.run_forever(self, sockopt=sockopt, sslopt=sslopt, ping_interval=ping_interval,
-                                           ping_timeout=ping_timeout,
-                                           http_proxy_host=self.http_proxy_host,
-                                           http_proxy_port=self.http_proxy_port)
+        websocket.WebSocketApp.run_forever(
+            self,
+            sockopt=sockopt,
+            sslopt=sslopt,
+            ping_interval=ping_interval,
+            ping_timeout=ping_timeout,
+            http_proxy_host=self.http_proxy_host,
+            http_proxy_port=self.http_proxy_port,
+        )
 
     def run(self):
         self.run_forever()

@@ -1,15 +1,15 @@
-import os
 import json
+import os
+
 import requests
-import warnings
 from requests import ConnectionError
 
-from .device import Device
+from ._compat import standard_b64encode
 from .channel import Channel
 from .chat import Chat
-from .errors import PushbulletError, InvalidKeyError, PushError, NoEncryptionModuleError
+from .device import Device
+from .errors import InvalidKeyError, NoEncryptionModuleError, PushbulletError, PushError
 from .filetype import get_file_type
-from ._compat import standard_b64encode
 
 
 class Pushbullet(object):
@@ -24,7 +24,7 @@ class Pushbullet(object):
 
     def __init__(self, api_key, encryption_password=None, proxy=None):
         self.api_key = api_key
-        self._json_header = {'Content-Type': 'application/json'}
+        self._json_header = {"Content-Type": "application/json"}
 
         self._session = requests.Session()
         self._session.auth = (self.api_key, "")
@@ -40,9 +40,9 @@ class Pushbullet(object):
         self._encryption_key = None
         if encryption_password:
             try:
-                from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
                 from cryptography.hazmat.backends import default_backend
                 from cryptography.hazmat.primitives import hashes
+                from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
             except ImportError as e:
                 raise NoEncryptionModuleError(str(e))
 
@@ -51,7 +51,7 @@ class Pushbullet(object):
                 length=32,
                 salt=self.user_info["iden"].encode("ASCII"),
                 iterations=30000,
-                backend=default_backend()
+                backend=default_backend(),
             )
             self._encryption_key = kdf.derive(encryption_password.encode("UTF-8"))
 
@@ -115,8 +115,7 @@ class Pushbullet(object):
 
     def new_device(self, nickname, manufacturer=None, model=None, icon="system"):
         data = {"nickname": nickname, "icon": icon}
-        data.update({k: v for k, v in
-            (("model", model), ("manufacturer", manufacturer)) if v is not None})
+        data.update({k: v for k, v in (("model", model), ("manufacturer", manufacturer)) if v is not None})
         r = self._session.post(self.DEVICES_URL, data=json.dumps(data))
         if r.status_code == requests.codes.ok:
             new_device = Device(self, r.json())
@@ -136,9 +135,16 @@ class Pushbullet(object):
             raise PushbulletError(r.text)
 
     def edit_device(self, device, nickname=None, model=None, manufacturer=None, icon=None):
-        data = {k: v for k, v in
-                (("nickname", nickname or device.nickname), ("model", model),
-                 ("manufacturer", manufacturer), ("icon", icon)) if v is not None}
+        data = {
+            k: v
+            for k, v in (
+                ("nickname", nickname or device.nickname),
+                ("model", model),
+                ("manufacturer", manufacturer),
+                ("icon", icon),
+            )
+            if v is not None
+        }
         iden = device.device_iden
         r = self._session.post("{}/{}".format(self.DEVICES_URL, iden), data=json.dumps(data))
         if r.status_code == requests.codes.ok:
@@ -195,7 +201,7 @@ class Pushbullet(object):
     def get_pushes(self, modified_after=None, limit=None, filter_inactive=True):
         data = {"modified_after": modified_after, "limit": limit}
         if filter_inactive:
-            data['active'] = "true"
+            data["active"] = "true"
 
         pushes_list = []
         get_more_pushes = True
@@ -205,8 +211,8 @@ class Pushbullet(object):
                 raise PushbulletError(r.text)
 
             pushes_list += r.json().get("pushes")
-            if 'cursor' in r.json() and (not limit or len(pushes_list) < limit):
-                data['cursor'] = r.json()['cursor']
+            if "cursor" in r.json() and (not limit or len(pushes_list) < limit):
+                data["cursor"] = r.json()["cursor"]
             else:
                 get_more_pushes = False
 
@@ -242,11 +248,13 @@ class Pushbullet(object):
         file_url = r.json().get("file_url")
         upload_url = r.json().get("upload_url")
 
-        upload = requests.post(upload_url, data=upload_data, files={"file": f})
+        requests.post(upload_url, data=upload_data, files={"file": f})
 
         return {"file_type": file_type, "file_url": file_url, "file_name": file_name}
 
-    def push_file(self, file_name, file_url, file_type, body=None, title=None, device=None, chat=None, email=None, channel=None):
+    def push_file(
+        self, file_name, file_url, file_type, body=None, title=None, device=None, chat=None, email=None, channel=None
+    ):
         data = {"type": "file", "file_type": file_type, "file_url": file_url, "file_name": file_name}
         if body:
             data["body"] = body
@@ -272,9 +280,9 @@ class Pushbullet(object):
         if r.status_code == requests.codes.ok:
             js = r.json()
             rate_limit = {}
-            rate_limit['reset'] = r.headers.get('X-Ratelimit-Reset')
-            rate_limit['limit'] = r.headers.get('X-Ratelimit-Limit')
-            rate_limit['remaining'] = r.headers.get('X-Ratelimit-Remaining')
+            rate_limit["reset"] = r.headers.get("X-Ratelimit-Reset")
+            rate_limit["limit"] = r.headers.get("X-Ratelimit-Limit")
+            rate_limit["remaining"] = r.headers.get("X-Ratelimit-Remaining")
 
             js["rate_limit"] = rate_limit
             return js
@@ -287,18 +295,15 @@ class Pushbullet(object):
             "push": {
                 "type": "messaging_extension_reply",
                 "package_name": "com.pushbullet.android",
-                "source_user_iden": self.user_info['iden'],
+                "source_user_iden": self.user_info["iden"],
                 "target_device_iden": device.device_iden,
                 "conversation_iden": number,
-                "message": message
-            }
+                "message": message,
+            },
         }
 
         if self._encryption_key:
-            data["push"] = {
-                "ciphertext": self._encrypt_data(data["push"]),
-                "encrypted": True
-            }
+            data["push"] = {"ciphertext": self._encrypt_data(data["push"]), "encrypted": True}
 
         r = self._session.post(self.EPHEMERALS_URL, data=json.dumps(data))
         if r.status_code == requests.codes.ok:
@@ -308,15 +313,11 @@ class Pushbullet(object):
     def _encrypt_data(self, data):
         assert self._encryption_key
 
-        from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
         from cryptography.hazmat.backends import default_backend
+        from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
         iv = os.urandom(12)
-        encryptor = Cipher(
-            algorithms.AES(self._encryption_key),
-            modes.GCM(iv),
-            backend=default_backend()
-        ).encryptor()
+        encryptor = Cipher(algorithms.AES(self._encryption_key), modes.GCM(iv), backend=default_backend()).encryptor()
 
         ciphertext = encryptor.update(json.dumps(data).encode("UTF-8")) + encryptor.finalize()
         ciphertext = b"1" + encryptor.tag + iv + ciphertext
@@ -325,9 +326,10 @@ class Pushbullet(object):
     def _decrypt_data(self, data):
         assert self._encryption_key
 
-        from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-        from cryptography.hazmat.backends import default_backend
         from binascii import a2b_base64
+
+        from cryptography.hazmat.backends import default_backend
+        from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
         key = self._encryption_key
         encoded_message = a2b_base64(data)
@@ -340,15 +342,13 @@ class Pushbullet(object):
         if version != b"1":
             raise Exception("Invalid Version")
 
-        cipher = Cipher(algorithms.AES(key),
-                        modes.GCM(initialization_vector, tag),
-                        backend=default_backend())
+        cipher = Cipher(algorithms.AES(key), modes.GCM(initialization_vector, tag), backend=default_backend())
         decryptor = cipher.decryptor()
 
         decrypted = decryptor.update(encrypted_message) + decryptor.finalize()
         decrypted = decrypted.decode()
 
-        return(decrypted)
+        return decrypted
 
     def refresh(self):
         self._load_devices()

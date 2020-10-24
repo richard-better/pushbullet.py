@@ -1,4 +1,3 @@
-
 try:
     from magic import from_buffer as magic_from_buffer
 except ImportError:
@@ -18,8 +17,7 @@ def get_file_type(file, filename):
 # decode because that results in unicode on python2
 def maybe_decode(s):
     try:
-        decoded = s.decode('utf-8')
-    except AttributeError as e:
+        decoded = s.decode("utf-8")
+    except AttributeError:
         decoded = s
     return decoded
-

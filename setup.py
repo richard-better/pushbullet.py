@@ -5,17 +5,13 @@ import sys
 from setuptools import setup
 
 with open("./pushbullet/__version__.py") as version_file:
-    version = version_file.read().split("\"")[1]
+    version = version_file.read().split('"')[1]
 
-if sys.argv[-1] == 'publish':
-    os.system('python setup.py sdist upload')
+if sys.argv[-1] == "publish":
+    os.system("python setup.py sdist upload")
     sys.exit()
 
-install_reqs = [
-    "requests>=1.0.0",
-    "python-magic",
-    "websocket-client>=0.53.0"
-]
+install_reqs = ["requests>=1.0.0", "python-magic", "websocket-client>=0.53.0"]
 
 
 def read(fname):
@@ -25,18 +21,19 @@ def read(fname):
     except IOError:
         return ""
 
+
 setup(
-    name = "pushbullet.py",
-    version = version,
-    author = "Richard B",
-    author_email = "pypi@richardb.me",
-    description = ("A simple python client for pushbullet.com"),
-    license = "MIT",
-    keywords = "push android pushbullet notification",
-    url = "https://github.com/rbrcsk/pushbullet.py",
+    name="pushbullet.py",
+    version=version,
+    author="Richard B",
+    author_email="pypi@richardb.me",
+    description=("A simple python client for pushbullet.com"),
+    license="MIT",
+    keywords="push android pushbullet notification",
+    url="https://github.com/rbrcsk/pushbullet.py",
     download_url="https://github.com/rbrcsk/pushbullet.py/tarball/" + version,
-    packages=['pushbullet'],
-    long_description=read('readme.rst'),
+    packages=["pushbullet"],
+    long_description=read("readme.rst"),
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
@@ -47,7 +44,7 @@ setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.2",
         "Topic :: Software Development :: Libraries :: Python Modules",
-        "Topic :: Utilities"
+        "Topic :: Utilities",
     ],
-    install_requires=install_reqs
+    install_requires=install_reqs,
 )
