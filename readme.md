@@ -4,9 +4,9 @@
 
 [![codecov](https://codecov.io/gh/rbrcsk/pushbullet.py/branch/master/graph/badge.svg?token=LrMLk9X4Zs)](https://codecov.io/gh/rbrcsk/pushbullet.py)
 
-![image](https://img.shields.io/pypi/v/pushbullet.py.svg?style=flat-square%0A%20:target:%20https://pypi.org/project/pushbullet.py/)
+[![image](https://img.shields.io/pypi/v/pushbullet.py.svg?style=flat-square%0A%20:target:%20https://pypi.org/project/pushbullet.py/)](https://pypi.org/project/pushbullet.py/)
 
-![image](https://img.shields.io/pypi/l/pushbullet.py.svg)
+[![image](https://img.shields.io/pypi/l/pushbullet.py.svg)](LICENSE)
 
 This is a python library for the wonderful [Pushbullet](https://www.pushbullet.com) service. It allows you to send push notifications to [Android](https://play.google.com/store/apps/details?id=com.pushbullet.android) devices.
 
