@@ -26,19 +26,21 @@ class Device(object):
         ):
             setattr(self, attr, device_info.get(attr))
 
-    def push_note(self, title, body):
+    def push_note(self, title, body, source=None):
         data = {"type": "note", "title": title, "body": body}
-        return self._push(data)
+        return self._push(data, source)
 
-    def push_link(self, title, url, body=None):
+    def push_link(self, title, url, body=None, source=None):
         data = {"type": "link", "title": title, "url": url, "body": body}
-        return self._push(data)
+        return self._push(data, source)
 
     def push_file(self, file_name, file_url, file_type, body=None, title=None):
         return self._account.push_file(file_name, file_url, file_type, body=body, title=title, device=self)
 
-    def _push(self, data):
+    def _push(self, data, source=None):
         data["device_iden"] = self.device_iden
+        if source:
+            data['source_device_iden'] = source.device_iden
         return self._account._push(data)
 
     @use_appropriate_encoding
