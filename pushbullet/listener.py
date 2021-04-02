@@ -63,12 +63,14 @@ class Listener(Thread, websocket.WebSocketApp):
         def callback(*_):
             self.connected = True
             self.last_update = time.time()
+
         return callback
 
     def _on_close(self):
         def callback(*_):
             log.debug("Listener closed")
             self.connected = False
+
         return callback
 
     def _on_message(self):
@@ -81,6 +83,7 @@ class Listener(Thread, websocket.WebSocketApp):
                     self.on_push(json_message)
             except Exception as e:
                 logging.exception(e)
+
         return callback
 
     def _on_error(self):
@@ -90,6 +93,7 @@ class Listener(Thread, websocket.WebSocketApp):
                 self.on_error(err)
             except Exception as e:
                 logging.exception(e)
+
         return callback
 
     def run_forever(self, sockopt=None, sslopt=None, ping_interval=0, ping_timeout=None, *args, **kwargs):
