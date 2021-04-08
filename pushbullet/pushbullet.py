@@ -100,10 +100,13 @@ class Pushbullet(object):
                 self.channels.append(c)
 
     @staticmethod
-    def _recipient(device=None, chat=None, email=None, channel=None):
-        data = {}
+    def _recipient(device=None, source=None, chat=None, email=None, channel=None):
+        data = dict()
+
         if device:
             data["device_iden"] = device.device_iden
+        if source:
+            data["source_device_iden"] = source.device_iden
         elif chat:
             data["email"] = chat.email
         elif email:
@@ -252,27 +255,28 @@ class Pushbullet(object):
 
         return {"file_type": file_type, "file_url": file_url, "file_name": file_name}
 
-    def push_file(
-        self, file_name, file_url, file_type, body=None, title=None, device=None, chat=None, email=None, channel=None
-    ):
-        data = {"type": "file", "file_type": file_type, "file_url": file_url, "file_name": file_name}
+    def push_file(self, file_name, file_url, file_type, body=None, title=None, device=None, source=None, chat=None, email=None, channel=None):
+        data = {"type": "file", "file_type": file_type,
+                "file_url": file_url, "file_name": file_name}
         if body:
             data["body"] = body
+
         if title:
             data["title"] = title
 
-        data.update(Pushbullet._recipient(device, chat, email, channel))
+        data.update(Pushbullet._recipient(device, source, chat, email, channel))
 
         return self._push(data)
 
-    def push_note(self, title, body, device=None, chat=None, email=None, channel=None):
+    def push_note(self, title, body, device=None, source=None, chat=None, email=None, channel=None):
         data = {"type": "note", "title": title, "body": body}
-        data.update(Pushbullet._recipient(device, chat, email, channel))
+        data.update(Pushbullet._recipient(
+            device, source, chat, email, channel))
         return self._push(data)
 
-    def push_link(self, title, url, body=None, device=None, chat=None, email=None, channel=None):
+    def push_link(self, title, url, body=None, device=None, source=None, chat=None, email=None, channel=None):
         data = {"type": "link", "title": title, "url": url, "body": body}
-        data.update(Pushbullet._recipient(device, chat, email, channel))
+        data.update(Pushbullet._recipient(device, source, chat, email, channel))
         return self._push(data)
 
     def _push(self, data):
