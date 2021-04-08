@@ -15,10 +15,13 @@ WEBSOCKET_URL = "wss://stream.pushbullet.com/websocket/"
 class Listener(Thread, websocket.WebSocketApp):
     def __init__(self, account, on_push=None, on_error=None, http_proxy_host=None, http_proxy_port=None):
         """
-        :param api_key: pushbullet Key
-        :param on_push: function that get's called on all pushes
-        :param http_proxy_host: host proxy (ie localhost)
-        :param http_proxy_port: host port (ie 3128)
+        :param account: Pushbullet object
+        :param on_push: Function that gets called on all pushes. It takes one parameter as an argument - the data
+            published on the push
+        :param on_error: Function called upon application or websocket error. It takes one parameter as an argument -
+            the exception triggered by the application
+        :param http_proxy_host: Host proxy (ie localhost)
+        :param http_proxy_port: Host port (ie 3128)
         """
         self._account = account
         self._api_key = self._account.api_key
@@ -28,10 +31,10 @@ class Listener(Thread, websocket.WebSocketApp):
         websocket.WebSocketApp.__init__(
             self,
             WEBSOCKET_URL + self._api_key,
-            on_open=self.on_open,
-            on_error=self.on_error,
-            on_message=self.on_message,
-            on_close=self.on_close,
+            on_open=self._on_open(),
+            on_error=self._on_error(),
+            on_message=self._on_message(),
+            on_close=self._on_close(),
         )
 
         self.connected = False
@@ -56,24 +59,44 @@ class Listener(Thread, websocket.WebSocketApp):
     def clean_history(self):
         self.history = []
 
-    def on_open(self):
-        self.connected = True
-        self.last_update = time.time()
+    def _on_open(self):
+        def callback(*_):
+            self.connected = True
+            self.last_update = time.time()
 
-    def on_close(self):
-        log.debug("Listener closed")
-        self.connected = False
+        return callback
 
-    def on_message(self, message):
-        log.debug("Message received:" + message)
-        try:
-            json_message = json.loads(message)
-            if json_message["type"] != "nop":
-                self.on_push(json_message)
-        except Exception as e:
-            logging.exception(e)
+    def _on_close(self):
+        def callback(*_):
+            log.debug("Listener closed")
+            self.connected = False
 
-    def run_forever(self, sockopt=None, sslopt=None, ping_interval=0, ping_timeout=None):
+        return callback
+
+    def _on_message(self):
+        def callback(*args):
+            message = args[1] if len(args) > 1 else args[0]
+            log.debug("Message received:" + message)
+            try:
+                json_message = json.loads(message)
+                if json_message["type"] != "nop":
+                    self.on_push(json_message)
+            except Exception as e:
+                logging.exception(e)
+
+        return callback
+
+    def _on_error(self):
+        def callback(*args):
+            err = args[1] if len(args) > 1 else args[0]
+            try:
+                self.on_error(err)
+            except Exception as e:
+                logging.exception(e)
+
+        return callback
+
+    def run_forever(self, sockopt=None, sslopt=None, ping_interval=0, ping_timeout=None, *args, **kwargs):
         websocket.WebSocketApp.run_forever(
             self,
             sockopt=sockopt,

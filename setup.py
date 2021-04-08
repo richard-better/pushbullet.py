@@ -11,7 +11,7 @@ if sys.argv[-1] == "publish":
     os.system("python setup.py sdist upload")
     sys.exit()
 
-install_reqs = ["requests>=1.0.0", "python-magic", "websocket-client>=0.53.0"]
+install_reqs = ["requests>=1.0.0", "python-magic", "websocket-client>=0.42.1"]
 
 
 def read(fname):
