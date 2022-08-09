@@ -21,6 +21,7 @@ class Pushbullet(object):
     PUSH_URL = "https://api.pushbullet.com/v2/pushes"
     UPLOAD_REQUEST_URL = "https://api.pushbullet.com/v2/upload-request"
     EPHEMERALS_URL = "https://api.pushbullet.com/v2/ephemerals"
+    PERMANENTS_URL = "https://api.pushbullet.com/v2/permanents"
 
     def __init__(self, api_key, encryption_password=None, proxy=None):
         self.api_key = api_key
@@ -359,3 +360,17 @@ class Pushbullet(object):
         self._load_chats()
         self._load_user_info()
         self._load_channels()
+
+    def get_threads(self, device):
+        permanents_url = '_threads'
+        return self._get_permanents(device, permanents_url)
+
+    def get_thread(self, device, thread):
+        permanents_url = '_thread_' + str(thread)
+        return self._get_permanents(device, permanents_url)
+
+    def _get_permanents(self, device, permanents_url):
+        r = self._session.get(self.PERMANENTS_URL + '/' + device.device_iden + permanents_url)
+        if r.status_code != requests.codes.ok:
+            raise PushbulletError(r.text)
+        return r.json()
